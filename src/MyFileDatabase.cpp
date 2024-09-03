@@ -1,6 +1,7 @@
+// Copyright 2024 Jason Han
 #include "MyFileDatabase.h"
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
 /**
  * Constructs a MyFileDatabase object and loads up the data structure with
@@ -64,7 +65,7 @@ void MyFileDatabase::deSerializeObjectFromFile() {
         inFile.read(reinterpret_cast<char*>(&keyLen), sizeof(keyLen));
         std::string key(keyLen, ' ');
         inFile.read(&key[0], keyLen);
-        Department dept; 
+        Department dept;
         dept.deserialize(inFile);
         departmentMapping[key] = dept;
     }
