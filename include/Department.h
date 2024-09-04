@@ -1,6 +1,5 @@
 // Copyright 2024 Jason Han
-#ifndef DEPARTMENT_H
-#define DEPARTMENT_H
+#pragma once
 
 #include "Course.h"
 #include <iostream>
@@ -33,5 +32,3 @@ private:
     std::string departmentChair;
     std::map<std::string, std::shared_ptr<Course>> courses;
 };
-
-#endif

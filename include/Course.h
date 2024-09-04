@@ -1,6 +1,5 @@
 // Copyright 2024 Jason Han
-#ifndef COURSE_H
-#define COURSE_H
+#pragma once
 
 #include <string>
 
@@ -33,5 +32,3 @@ public:
     void serialize(std::ostream& out) const;
     void deserialize(std::istream& in);
 };
-
-#endif

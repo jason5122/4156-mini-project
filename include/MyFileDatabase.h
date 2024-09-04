@@ -1,6 +1,5 @@
 // Copyright 2024 Jason Han
-#ifndef MYFILEDATABASE_H
-#define MYFILEDATABASE_H
+#pragma once
 
 #include "Department.h"
 #include <map>
@@ -21,5 +20,3 @@ private:
     std::map<std::string, Department> departmentMapping;
     std::string filePath;
 };
-
-#endif

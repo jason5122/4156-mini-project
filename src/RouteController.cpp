@@ -4,7 +4,6 @@
 #include <map>
 #include <string>
 
-#include "Globals.h"
 #include "MyFileDatabase.h"
 #include "RouteController.h"
 #include "crow.h"  // NOLINT

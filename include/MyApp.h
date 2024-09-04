@@ -1,6 +1,5 @@
 // Copyright 2024 Jason Han
-#ifndef MYAPP_H
-#define MYAPP_H
+#pragma once
 
 #include "MyFileDatabase.h"
 #include <string>
@@ -19,5 +18,3 @@ private:
     static MyFileDatabase* myFileDatabase;
     static bool saveData;
 };
-
-#endif

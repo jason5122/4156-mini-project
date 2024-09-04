@@ -1,14 +1,8 @@
 // Copyright 2024 Jason Han
 #include <csignal>
-#include <iostream>
-#include <map>
 #include <string>
 
-#include "Course.h"
-#include "Department.h"
-#include "Globals.h"
 #include "MyApp.h"
-#include "MyFileDatabase.h"
 #include "RouteController.h"
 #include "crow.h"  // NOLINT
 
