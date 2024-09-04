@@ -4,13 +4,6 @@
 #include <string>
 
 class Course {
-private:
-    int enrollmentCapacity;
-    int enrolledStudentCount;
-    std::string courseLocation;
-    std::string instructorName;
-    std::string courseTimeSlot;
-
 public:
     Course(int count, const std::string& instructorName, const std::string& courseLocation,
            const std::string& timeSlot);
@@ -31,4 +24,11 @@ public:
     void setEnrolledStudentCount(int count);
     void serialize(std::ostream& out) const;
     void deserialize(std::istream& in);
+
+private:
+    int enrollmentCapacity;
+    int enrolledStudentCount;
+    std::string courseLocation;
+    std::string instructorName;
+    std::string courseTimeSlot;
 };

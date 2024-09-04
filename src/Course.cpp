@@ -49,11 +49,11 @@ std::string Course::getCourseLocation() const {
 }
 
 std::string Course::getInstructorName() const {
-    return courseTimeSlot;
+    return instructorName;
 }
 
 std::string Course::getCourseTimeSlot() const {
-    return instructorName;
+    return courseTimeSlot;
 }
 
 std::string Course::display() const {
