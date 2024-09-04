@@ -1,10 +1,9 @@
 // Copyright 2024 Jason Han
-#include "Course.h"
-#include <map>
-#include <string>
 #ifndef DEPARTMENT_H
 #define DEPARTMENT_H
 
+#include "Course.h"
+#include <iostream>
 #include <map>
 #include <memory>
 #include <string>

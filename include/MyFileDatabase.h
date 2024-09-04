@@ -1,10 +1,10 @@
 // Copyright 2024 Jason Han
+#ifndef MYFILEDATABASE_H
+#define MYFILEDATABASE_H
+
 #include "Department.h"
 #include <map>
 #include <string>
-
-#ifndef MYFILEDATABASE_H
-#define MYFILEDATABASE_H
 
 class MyFileDatabase {
 public:

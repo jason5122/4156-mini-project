@@ -2,7 +2,6 @@
 #ifndef ROUTECONTROLLER_H
 #define ROUTECONTROLLER_H
 
-#include "Globals.h"
 #include "MyFileDatabase.h"
 #include "crow.h"
 

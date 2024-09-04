@@ -1,10 +1,6 @@
 // Copyright 2024 Jason Han
-#include "Course.h"
 #include "Department.h"
-#include <map>
-#include <memory>
 #include <sstream>
-#include <string>
 
 /**
  * Constructs a new Department object with the given parameters.
@@ -91,7 +87,8 @@ void Department::createCourse(std::string courseId, std::string instructorName,
 }
 
 /**
- * Returns a string representation of the department, including its code and the courses offered.
+ * Returns a string representation of the department, including its code and the courses
+ offered.
  *
  * @return A string representing the department.
  */

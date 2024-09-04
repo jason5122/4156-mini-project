@@ -2,10 +2,7 @@
 #ifndef MYAPP_H
 #define MYAPP_H
 
-#include "Course.h"
-#include "Department.h"
 #include "MyFileDatabase.h"
-#include <map>
 #include <string>
 
 class MyApp {
