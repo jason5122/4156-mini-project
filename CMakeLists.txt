@@ -4,7 +4,9 @@ project(IndividualMiniproject)
 set(INCLUDE_PATHS external_libraries/boost_1_85_0 external_libraries/Crow-1.2.0-Darwin/include)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS --coverage)
+
+# TODO: Find a way to output coverage on each recompile, or separate this step out as a "coverage
+# only" thing. set(CMAKE_CXX_FLAGS --coverage)
 
 set(SOURCE_FILES src/Course.cpp src/Department.cpp src/MyFileDatabase.cpp src/RouteController.cpp
                  src/MyApp.cpp src/Globals.cpp

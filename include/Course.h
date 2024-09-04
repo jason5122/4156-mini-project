@@ -15,13 +15,13 @@ public:
     std::string display() const;
 
     bool isCourseFull() const;
+    void setEnrolledStudentCount(int count);
     bool enrollStudent();
     bool dropStudent();
 
     void reassignInstructor(const std::string& newInstructorName);
     void reassignLocation(const std::string& newLocation);
     void reassignTime(const std::string& newTime);
-    void setEnrolledStudentCount(int count);
     void serialize(std::ostream& out) const;
     void deserialize(std::istream& in);
 

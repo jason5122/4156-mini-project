@@ -13,7 +13,7 @@
  */
 Course::Course(int capacity, const std::string& instructorName, const std::string& courseLocation,
                const std::string& timeSlot)
-    : enrollmentCapacity(capacity), enrolledStudentCount(500), courseLocation(courseLocation),
+    : enrollmentCapacity(capacity), enrolledStudentCount(0), courseLocation(courseLocation),
       instructorName(instructorName), courseTimeSlot(timeSlot) {}
 
 /**
@@ -24,14 +24,26 @@ Course::Course()
     : enrollmentCapacity(0), enrolledStudentCount(0), courseLocation(""), instructorName(""),
       courseTimeSlot("") {}
 
+bool Course::isCourseFull() const {
+    return enrolledStudentCount >= enrollmentCapacity;
+}
+
+void Course::setEnrolledStudentCount(int count) {
+    enrolledStudentCount = count;
+}
+
 /**
  * Enrolls a student in the course if there is space available.
  *
  * @return true if the student is successfully enrolled, false otherwise.
  */
 bool Course::enrollStudent() {
-    enrolledStudentCount++;
-    return false;
+    if (!isCourseFull()) {
+        enrolledStudentCount++;
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /**
@@ -40,8 +52,12 @@ bool Course::enrollStudent() {
  * @return true if the student is successfully dropped, false otherwise.
  */
 bool Course::dropStudent() {
-    enrolledStudentCount--;
-    return false;
+    if (enrolledStudentCount > 0) {
+        enrolledStudentCount--;
+        return true;
+    } else {
+        return false;
+    }
 }
 
 std::string Course::getCourseLocation() const {
@@ -73,14 +89,6 @@ void Course::reassignLocation(const std::string& newLocation) {
 
 void Course::reassignTime(const std::string& newTime) {
     courseTimeSlot = newTime;
-}
-
-void Course::setEnrolledStudentCount(int count) {
-    enrolledStudentCount = count;
-}
-
-bool Course::isCourseFull() const {
-    return enrollmentCapacity > enrolledStudentCount;
 }
 
 void Course::serialize(std::ostream& out) const {
