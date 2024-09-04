@@ -24,6 +24,23 @@ Course::Course()
     : enrollmentCapacity(0), enrolledStudentCount(0), courseLocation(""), instructorName(""),
       courseTimeSlot("") {}
 
+std::string Course::getCourseLocation() const {
+    return courseLocation;
+}
+
+std::string Course::getInstructorName() const {
+    return instructorName;
+}
+
+std::string Course::getCourseTimeSlot() const {
+    return courseTimeSlot;
+}
+
+std::string Course::display() const {
+    return "\nInstructor: " + instructorName + "; Location: " + courseLocation +
+           "; Time: " + courseTimeSlot;
+}
+
 bool Course::isCourseFull() const {
     return enrolledStudentCount >= enrollmentCapacity;
 }
@@ -60,31 +77,12 @@ bool Course::dropStudent() {
     }
 }
 
-std::string Course::getCourseLocation() const {
-    return courseLocation;
-}
-
-std::string Course::getInstructorName() const {
-    return instructorName;
-}
-
-std::string Course::getCourseTimeSlot() const {
-    return courseTimeSlot;
-}
-
-std::string Course::display() const {
-    return "\nInstructor: " + instructorName + "; Location: " + courseLocation +
-           "; Time: " + courseTimeSlot;
+void Course::reassignLocation(const std::string& newLocation) {
+    courseLocation = newLocation;
 }
 
 void Course::reassignInstructor(const std::string& newInstructorName) {
-    std::cout << "Old Instructor: " << instructorName << std::endl;
-    this->instructorName = newInstructorName;  // Ensure the class member is being updated
-    std::cout << "New Instructor: " << this->instructorName << std::endl;
-}
-
-void Course::reassignLocation(const std::string& newLocation) {
-    courseLocation = newLocation;
+    instructorName = newInstructorName;
 }
 
 void Course::reassignTime(const std::string& newTime) {

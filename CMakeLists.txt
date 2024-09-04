@@ -2,11 +2,20 @@ cmake_minimum_required(VERSION 3.15)
 project(IndividualMiniproject)
 
 set(INCLUDE_PATHS external_libraries/boost_1_85_0 external_libraries/Crow-1.2.0-Darwin/include)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Enable extra warnings.
+if(MSVC)
+    add_compile_options(/W4 /WX)
+else()
+    add_compile_options(-Wall -Wextra -pedantic -Werror -Wno-unused-parameter)
+endif()
+
 # TODO: Find a way to output coverage on each recompile, or separate this step out as a "coverage
-# only" thing. set(CMAKE_CXX_FLAGS --coverage)
+# only" thing.
+
+# set(CMAKE_CXX_FLAGS --coverage)
 
 set(SOURCE_FILES src/Course.cpp src/Department.cpp src/MyFileDatabase.cpp src/RouteController.cpp
                  src/MyApp.cpp src/Globals.cpp
