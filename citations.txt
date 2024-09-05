@@ -1,2 +1,5 @@
 1. LCOV tutorial
 https://qiaomuf.wordpress.com/2011/05/26/use-gcov-and-lcov-to-know-your-test-coverage/
+
+2. Boost.Beast simple HTTP client
+https://www.boost.org/doc/libs/1_82_0/libs/beast/doc/html/beast/quick_start/http_client.html
