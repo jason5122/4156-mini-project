@@ -13,9 +13,11 @@ namespace http = beast::http;
 namespace net = boost::asio;
 using tcp = net::ip::tcp;
 
+// NOTE: Make sure the server is running before executing these tests!
+
 namespace {
 
-std::string Fetch(const std::string& endpoint) {
+std::string MakeRequest(const std::string& endpoint, http::verb verb) {
     net::io_context ioc;
     tcp::resolver resolver{ioc};
     beast::tcp_stream stream{ioc};
@@ -26,7 +28,7 @@ std::string Fetch(const std::string& endpoint) {
     const auto results = resolver.resolve(host, port);
     stream.connect(results);
 
-    http::request<http::string_body> req{http::verb::get, endpoint, 10};
+    http::request<http::string_body> req{verb, endpoint, 10};
     req.set(http::field::host, host);
 
     http::write(stream, req);
@@ -40,6 +42,14 @@ std::string Fetch(const std::string& endpoint) {
     auto error_code [[maybe_unused]] = stream.socket().shutdown(tcp::socket::shutdown_both, ec);
 
     return body;
+}
+
+std::string Fetch(const std::string& endpoint) {
+    return MakeRequest(endpoint, http::verb::get);
+}
+
+std::string Patch(const std::string& endpoint) {
+    return MakeRequest(endpoint, http::verb::patch);
 }
 
 }
@@ -84,4 +94,90 @@ TEST(RouteControllerUnitTests, IsCourseFullTest) {
     auto body2 = Fetch(endpoint2);
     auto expected2 = "true";
     EXPECT_EQ(body2, expected2);
+}
+
+TEST(RouteControllerUnitTests, GetMajorCountFromDeptTest) {
+    const auto endpoint = "/getMajorCountFromDept?deptCode=COMS";
+    auto body = Fetch(endpoint);
+    auto expected = "There are: 2700 majors in the department";
+    EXPECT_EQ(body, expected);
+}
+
+TEST(RouteControllerUnitTests, IdentifyDeptChairTest) {
+    const auto endpoint = "/idDeptChair?deptCode=COMS";
+    auto body = Fetch(endpoint);
+    auto expected = "Luca Carloni is the department chair.";
+    EXPECT_EQ(body, expected);
+}
+
+TEST(RouteControllerUnitTests, FindCourseLocationTest) {
+    const auto endpoint = "/findCourseLocation?deptCode=COMS&courseCode=3203";
+    auto body = Fetch(endpoint);
+    auto expected = "301 URIS is where the course is located.";
+    EXPECT_EQ(body, expected);
+}
+
+TEST(RouteControllerUnitTests, FindCourseInstructorTest) {
+    const auto endpoint = "/findCourseInstructor?deptCode=COMS&courseCode=3203";
+    auto body = Fetch(endpoint);
+    auto expected = "Ansaf Salleb-Aouissi is the instructor for the course.";
+    EXPECT_EQ(body, expected);
+}
+
+TEST(RouteControllerUnitTests, FindCourseTimeTest) {
+    const auto endpoint = "/findCourseTime?deptCode=COMS&courseCode=3203";
+    auto body = Fetch(endpoint);
+    auto expected = "The course meets at: 10:10-11:25";
+    EXPECT_EQ(body, expected);
+}
+
+TEST(RouteControllerUnitTests, AddMajorToDeptTest) {
+    const auto endpoint = "/addMajorToDept?deptCode=COMS";
+    auto body = Fetch(endpoint);
+    auto expected = "Attribute was updated successfully";
+    EXPECT_EQ(body, expected);
+}
+
+TEST(RouteControllerUnitTests, RemoveMajorToDeptTest) {
+    const auto endpoint = "/removeMajorFromDept?deptCode=COMS";
+    auto body = Fetch(endpoint);
+    auto expected = "Attribute was updated successfully";
+    EXPECT_EQ(body, expected);
+}
+
+TEST(RouteControllerUnitTests, SetEnrollmentCountTest) {
+    const auto endpoint = "/setEnrollmentCount?deptCode=COMS&courseCode=3203&count=42";
+    auto body = Patch(endpoint);
+    auto expected = "Attribute was updated successfully.";
+    EXPECT_EQ(body, expected);
+}
+
+TEST(RouteControllerUnitTests, SetCourseLocationTest) {
+    const auto endpoint =
+        "/changeCourseLocation?deptCode=CHEM&courseCode=1500&location=402%20CHANDLER";
+    auto body = Patch(endpoint);
+    auto expected = "Attribute was updated successfully.";
+    EXPECT_EQ(body, expected);
+}
+
+TEST(RouteControllerUnitTests, SetCourseInstructorTest) {
+    const auto endpoint =
+        "/changeCourseTeacher?deptCode=CHEM&courseCode=1500&instructor=Jae%20Lee";
+    auto body = Patch(endpoint);
+    auto expected = "Attribute was updated successfully.";
+    EXPECT_EQ(body, expected);
+}
+
+TEST(RouteControllerUnitTests, SetCourseTimeTest) {
+    const auto endpoint = "/changeCourseTime?deptCode=CHEM&courseCode=1500&time=10:10-11:25";
+    auto body = Patch(endpoint);
+    auto expected = "Attribute was updated successfully.";
+    EXPECT_EQ(body, expected);
+}
+
+TEST(RouteControllerUnitTests, DropStudentFromCourseTest) {
+    const auto endpoint = "/dropStudentFromCourse?deptCode=CHEM&courseCode=1500";
+    auto body = Fetch(endpoint);
+    auto expected = "Student has been dropped";
+    EXPECT_EQ(body, expected);
 }
