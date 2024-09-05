@@ -20,8 +20,10 @@ endif()
 set(SOURCE_FILES src/Course.cpp src/Department.cpp src/MyFileDatabase.cpp src/RouteController.cpp
                  src/MyApp.cpp src/Globals.cpp
 )
-set(TEST_FILES test/CourseUnitTests.cpp test/DepartmentUnitTests.cpp
-               test/RouteControllerUnitTests.cpp test/MyFileDatabaseUnitTests.cpp
+set(TEST_FILES
+    test/CourseUnitTests.cpp test/DepartmentUnitTests.cpp test/MyFileDatabaseUnitTests.cpp
+    test/MyAppUnitTests.cpp
+    # test/RouteControllerUnitTests.cpp
 )
 
 # Main project executable.

@@ -4,7 +4,7 @@
 
 TEST(MyFileDatabaseUnitTests, SerializeDeserializeTest) {
     // Serialize.
-    MyFileDatabase serialize_db{1, "testfile.bin"};
+    MyFileDatabase serialize_db{1, "database_test.bin"};
 
     std::map<std::string, Department> mapping;
     auto coms1004 = std::make_shared<Course>(400, "Adam Cannon", "417 IAB", "11:40-12:55");
@@ -18,14 +18,14 @@ TEST(MyFileDatabaseUnitTests, SerializeDeserializeTest) {
     serialize_db.saveContentsToFile();
 
     // Deserialize.
-    MyFileDatabase deserialize_db{0, "testfile.bin"};
+    MyFileDatabase deserialize_db{0, "database_test.bin"};
     auto deserialized_mapping = deserialize_db.getDepartmentMapping();
 
     EXPECT_EQ(deserialized_mapping, mapping);
 }
 
 TEST(MyFileDatabaseUnitTests, DisplayTest) {
-    MyFileDatabase db{1, "testfile.bin"};
+    MyFileDatabase db{1, "database_test.bin"};
 
     std::map<std::string, Department> mapping;
     auto coms1004 = std::make_shared<Course>(400, "Adam Cannon", "417 IAB", "11:40-12:55");
