@@ -73,3 +73,15 @@ TEST(RouteControllerUnitTests, RetrieveCourseTest) {
     auto expected = "\nInstructor: Brian Borowski; Location: 301 URIS; Time: 4:10-5:25";
     EXPECT_EQ(body, expected);
 }
+
+TEST(RouteControllerUnitTests, IsCourseFullTest) {
+    const auto endpoint1 = "/isCourseFull?deptCode=ECON&courseCode=3211";
+    auto body1 = Fetch(endpoint1);
+    auto expected1 = "false";
+    EXPECT_EQ(body1, expected1);
+
+    const auto endpoint2 = "/isCourseFull?deptCode=IEOR&courseCode=2500";
+    auto body2 = Fetch(endpoint2);
+    auto expected2 = "true";
+    EXPECT_EQ(body2, expected2);
+}
