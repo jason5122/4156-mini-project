@@ -2,6 +2,11 @@
 #include "Department.h"
 #include <gtest/gtest.h>
 
+TEST(DepartmentUnitTests, DefaultConstructorTest) {
+    Department dept{};
+    EXPECT_EQ(dept.getNumberOfMajors(), 0);
+}
+
 TEST(DepartmentUnitTests, GetterTest) {
     std::string times[] = {"11:40-12:55", "4:10-5:25", "10:10-11:25", "2:40-3:55"};
 
