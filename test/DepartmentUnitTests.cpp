@@ -122,7 +122,7 @@ TEST(DepartmentUnitTests, InequalityByCourseValuesTest) {
     std::map<std::string, std::shared_ptr<Course>> courses2;
     auto c2 = std::make_shared<Course>(50, "Uday Menon", "627 MUDD", "11:40-12:55");
     c2->setEnrolledStudentCount(21);
-    courses1["2500"] = c2;
+    courses2["2500"] = c2;
 
     Department d1("IEOR", courses1, "Jay Sethuraman", 67);
     Department d2("IEOR", courses2, "Jay Sethuraman", 67);

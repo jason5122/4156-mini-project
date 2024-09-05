@@ -37,8 +37,11 @@ std::string Course::getCourseTimeSlot() const {
 }
 
 std::string Course::display() const {
-    return "\nInstructor: " + instructorName + "; Location: " + courseLocation +
-           "; Time: " + courseTimeSlot;
+    std::string str;
+    str += "\nInstructor: " + instructorName;
+    str += "; Location: " + courseLocation;
+    str += "; Time: " + courseTimeSlot;
+    return str;
 }
 
 bool Course::isCourseFull() const {
