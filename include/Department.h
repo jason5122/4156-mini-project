@@ -29,6 +29,9 @@ public:
     void serialize(std::ostream& out) const;
     void deserialize(std::istream& in);
 
+    bool operator==(const Department& rhs) const;
+    bool operator!=(const Department& rhs) const;
+
 private:
     int numberOfMajors;
     std::string deptCode;

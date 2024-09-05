@@ -125,3 +125,14 @@ void Course::deserialize(std::istream& in) {
     courseTimeSlot.resize(timeSlotLen);
     in.read(&courseTimeSlot[0], timeSlotLen);
 }
+
+bool Course::operator==(const Course& rhs) const {
+    return enrollmentCapacity == rhs.enrollmentCapacity &&
+           enrolledStudentCount == rhs.enrolledStudentCount &&
+           courseLocation == rhs.courseLocation && instructorName == rhs.instructorName &&
+           courseTimeSlot == rhs.courseTimeSlot;
+}
+
+bool Course::operator!=(const Course& rhs) const {
+    return !operator==(rhs);
+}

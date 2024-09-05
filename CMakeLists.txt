@@ -21,7 +21,7 @@ set(SOURCE_FILES src/Course.cpp src/Department.cpp src/MyFileDatabase.cpp src/Ro
                  src/MyApp.cpp src/Globals.cpp
 )
 set(TEST_FILES test/CourseUnitTests.cpp test/DepartmentUnitTests.cpp
-               test/RouteControllerUnitTests.cpp
+               test/RouteControllerUnitTests.cpp test/MyFileDatabaseUnitTests.cpp
 )
 
 # Main project executable.

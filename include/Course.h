@@ -26,6 +26,9 @@ public:
     void serialize(std::ostream& out) const;
     void deserialize(std::istream& in);
 
+    bool operator==(const Course& rhs) const;
+    bool operator!=(const Course& rhs) const;
+
 private:
     int enrollmentCapacity;
     int enrolledStudentCount;

@@ -148,3 +148,21 @@ void Department::deserialize(std::istream& in) {
         courses[courseId] = course;
     }
 }
+
+bool Department::operator==(const Department& rhs) const {
+    // Compare courses by value, not by pointer address.
+    for (const auto& [courseId, course] : courses) {
+        if (!rhs.courses.count(courseId)) {
+            return false;
+        }
+        if (*course.get() != *rhs.courses.at(courseId).get()) {
+            return false;
+        }
+    }
+    return numberOfMajors == rhs.numberOfMajors && deptCode == rhs.deptCode &&
+           departmentChair == rhs.departmentChair;
+}
+
+bool Department::operator!=(const Department& rhs) const {
+    return !operator==(rhs);
+}
