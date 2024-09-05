@@ -16,7 +16,7 @@ public:
 
     int getNumberOfMajors() const;
     std::string getDepartmentChair() const;
-    std::map<std::string, std::shared_ptr<Course>> getCourseSelection() const;
+    const std::map<std::string, std::shared_ptr<Course>>& getCourseSelection() const;
     std::string display() const;
 
     void addPersonToMajor();

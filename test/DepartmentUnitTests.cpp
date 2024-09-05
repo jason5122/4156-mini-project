@@ -44,8 +44,7 @@ TEST(DepartmentUnitTests, DisplayTest) {
 }
 
 TEST(DepartmentUnitTests, AddDropTest) {
-    std::map<std::string, std::shared_ptr<Course>> courses;
-    Department ieor("IEOR", courses, "Jay Sethuraman", 20);
+    Department ieor("IEOR", {}, "Jay Sethuraman", 20);
     EXPECT_EQ(ieor.getNumberOfMajors(), 20);
 
     for (int i = 1; i <= 10; i++) {
@@ -61,4 +60,28 @@ TEST(DepartmentUnitTests, AddDropTest) {
     // Ensure number of majors doesn't go below 0.
     ieor.dropPersonFromMajor();
     EXPECT_EQ(ieor.getNumberOfMajors(), 0);
+}
+
+TEST(DepartmentUnitTests, AddCourseTest) {
+    Department ieor("IEOR", {}, "Jay Sethuraman", 20);
+    EXPECT_TRUE(ieor.getCourseSelection().empty());
+
+    auto ieor2500 = std::make_shared<Course>(50, "Uday Menon", "627 MUDD", "11:40-12:55");
+    ieor.addCourse("2500", ieor2500);
+    EXPECT_EQ(ieor.getCourseSelection().size(), 1);
+
+    auto ieor3404 = std::make_shared<Course>(73, "Christopher J Dolan", "303 MUDD", "2:40-3:55");
+    ieor.addCourse("3404", ieor3404);
+    EXPECT_EQ(ieor.getCourseSelection().size(), 2);
+}
+
+TEST(DepartmentUnitTests, CreateCourseTest) {
+    Department ieor("IEOR", {}, "Jay Sethuraman", 20);
+    EXPECT_TRUE(ieor.getCourseSelection().empty());
+
+    ieor.createCourse("2500", "Uday Menon", "627 MUDD", "11:40-12:55", 52);
+    EXPECT_EQ(ieor.getCourseSelection().size(), 1);
+
+    ieor.createCourse("3404", "Christopher J Dolan", "303 MUDD", "2:40-3:55", 80);
+    EXPECT_EQ(ieor.getCourseSelection().size(), 2);
 }

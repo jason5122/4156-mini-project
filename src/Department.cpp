@@ -41,7 +41,7 @@ std::string Department::getDepartmentChair() const {
  *
  * @return A HashMap containing courses offered by the department.
  */
-std::map<std::string, std::shared_ptr<Course>> Department::getCourseSelection() const {
+const std::map<std::string, std::shared_ptr<Course>>& Department::getCourseSelection() const {
     return courses;
 }
 
