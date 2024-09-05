@@ -1,10 +1,9 @@
 // Copyright 2024 Jason Han
+#pragma once
+
 #include "Department.h"
 #include <map>
 #include <string>
-
-#ifndef MYFILEDATABASE_H
-#define MYFILEDATABASE_H
 
 class MyFileDatabase {
 public:
@@ -21,5 +20,3 @@ private:
     std::map<std::string, Department> departmentMapping;
     std::string filePath;
 };
-
-#endif

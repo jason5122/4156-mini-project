@@ -4,7 +4,6 @@
 #include <map>
 #include <string>
 
-#include "Globals.h"
 #include "MyFileDatabase.h"
 #include "RouteController.h"
 #include "crow.h"  // NOLINT
@@ -641,6 +640,11 @@ void RouteController::initRoutes(crow::App<>& app) {
     CROW_ROUTE(app, "/setEnrollmentCount")
         .methods(crow::HTTPMethod::PATCH)([this](const crow::request& req, crow::response& res) {
             setEnrollmentCount(req, res);
+        });
+
+    CROW_ROUTE(app, "/dropStudentFromCourse")
+        .methods(crow::HTTPMethod::GET)([this](const crow::request& req, crow::response& res) {
+            dropStudentFromCourse(req, res);
         });
 }
 

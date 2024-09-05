@@ -1,8 +1,6 @@
 // Copyright 2024 Jason Han
-#ifndef ROUTECONTROLLER_H
-#define ROUTECONTROLLER_H
+#pragma once
 
-#include "Globals.h"
 #include "MyFileDatabase.h"
 #include "crow.h"
 
@@ -31,5 +29,3 @@ public:
     void setCourseTime(const crow::request& req, crow::response& res);
     void dropStudentFromCourse(const crow::request&, crow::response& res);
 };
-
-#endif

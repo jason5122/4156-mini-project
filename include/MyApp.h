@@ -1,11 +1,7 @@
 // Copyright 2024 Jason Han
-#ifndef MYAPP_H
-#define MYAPP_H
+#pragma once
 
-#include "Course.h"
-#include "Department.h"
 #include "MyFileDatabase.h"
-#include <map>
 #include <string>
 
 class MyApp {
@@ -22,5 +18,3 @@ private:
     static MyFileDatabase* myFileDatabase;
     static bool saveData;
 };
-
-#endif

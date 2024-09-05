@@ -1,10 +1,6 @@
 // Copyright 2024 Jason Han
+#pragma once
+
 #include "MyFileDatabase.h"
 
-#ifndef GLOBALS_H
-#define GLOBALS_H
-
-extern MyFileDatabase* globalDatabase; 
-
-
-#endif 
+extern MyFileDatabase* globalDatabase;

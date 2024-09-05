@@ -1,16 +1,9 @@
 // Copyright 2024 Jason Han
+#pragma once
+
 #include <string>
-#ifndef COURSE_H
-#define COURSE_H
 
 class Course {
-private:
-    int enrollmentCapacity;
-    int enrolledStudentCount;
-    std::string courseLocation;
-    std::string instructorName;
-    std::string courseTimeSlot;
-
 public:
     Course(int count, const std::string& instructorName, const std::string& courseLocation,
            const std::string& timeSlot);
@@ -22,15 +15,24 @@ public:
     std::string display() const;
 
     bool isCourseFull() const;
+    void setEnrolledStudentCount(int count);
     bool enrollStudent();
     bool dropStudent();
 
-    void reassignInstructor(const std::string& newInstructorName);
     void reassignLocation(const std::string& newLocation);
+    void reassignInstructor(const std::string& newInstructorName);
     void reassignTime(const std::string& newTime);
-    void setEnrolledStudentCount(int count);
+
     void serialize(std::ostream& out) const;
     void deserialize(std::istream& in);
-};
 
-#endif
+    bool operator==(const Course& rhs) const;
+    bool operator!=(const Course& rhs) const;
+
+private:
+    int enrollmentCapacity;
+    int enrolledStudentCount;
+    std::string courseLocation;
+    std::string instructorName;
+    std::string courseTimeSlot;
+};

@@ -13,7 +13,7 @@
  */
 Course::Course(int capacity, const std::string& instructorName, const std::string& courseLocation,
                const std::string& timeSlot)
-    : enrollmentCapacity(capacity), enrolledStudentCount(500), courseLocation(courseLocation),
+    : enrollmentCapacity(capacity), enrolledStudentCount(0), courseLocation(courseLocation),
       instructorName(instructorName), courseTimeSlot(timeSlot) {}
 
 /**
@@ -24,14 +24,46 @@ Course::Course()
     : enrollmentCapacity(0), enrolledStudentCount(0), courseLocation(""), instructorName(""),
       courseTimeSlot("") {}
 
+std::string Course::getCourseLocation() const {
+    return courseLocation;
+}
+
+std::string Course::getInstructorName() const {
+    return instructorName;
+}
+
+std::string Course::getCourseTimeSlot() const {
+    return courseTimeSlot;
+}
+
+std::string Course::display() const {
+    std::string str;
+    str += "\nInstructor: " + instructorName;
+    str += "; Location: " + courseLocation;
+    str += "; Time: " + courseTimeSlot;
+    return str;
+}
+
+bool Course::isCourseFull() const {
+    return enrolledStudentCount >= enrollmentCapacity;
+}
+
+void Course::setEnrolledStudentCount(int count) {
+    enrolledStudentCount = count;
+}
+
 /**
  * Enrolls a student in the course if there is space available.
  *
  * @return true if the student is successfully enrolled, false otherwise.
  */
 bool Course::enrollStudent() {
-    enrolledStudentCount++;
-    return false;
+    if (!isCourseFull()) {
+        enrolledStudentCount++;
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /**
@@ -40,47 +72,24 @@ bool Course::enrollStudent() {
  * @return true if the student is successfully dropped, false otherwise.
  */
 bool Course::dropStudent() {
-    enrolledStudentCount--;
-    return false;
-}
-
-std::string Course::getCourseLocation() const {
-    return courseLocation;
-}
-
-std::string Course::getInstructorName() const {
-    return courseTimeSlot;
-}
-
-std::string Course::getCourseTimeSlot() const {
-    return instructorName;
-}
-
-std::string Course::display() const {
-    return "\nInstructor: " + instructorName + "; Location: " + courseLocation +
-           "; Time: " + courseTimeSlot;
-}
-
-void Course::reassignInstructor(const std::string& newInstructorName) {
-    std::cout << "Old Instructor: " << instructorName << std::endl;
-    this->instructorName = newInstructorName;  // Ensure the class member is being updated
-    std::cout << "New Instructor: " << this->instructorName << std::endl;
+    if (enrolledStudentCount > 0) {
+        enrolledStudentCount--;
+        return true;
+    } else {
+        return false;
+    }
 }
 
 void Course::reassignLocation(const std::string& newLocation) {
     courseLocation = newLocation;
 }
 
+void Course::reassignInstructor(const std::string& newInstructorName) {
+    instructorName = newInstructorName;
+}
+
 void Course::reassignTime(const std::string& newTime) {
     courseTimeSlot = newTime;
-}
-
-void Course::setEnrolledStudentCount(int count) {
-    enrolledStudentCount = count;
-}
-
-bool Course::isCourseFull() const {
-    return enrollmentCapacity > enrolledStudentCount;
 }
 
 void Course::serialize(std::ostream& out) const {
@@ -118,4 +127,15 @@ void Course::deserialize(std::istream& in) {
     in.read(reinterpret_cast<char*>(&timeSlotLen), sizeof(timeSlotLen));
     courseTimeSlot.resize(timeSlotLen);
     in.read(&courseTimeSlot[0], timeSlotLen);
+}
+
+bool Course::operator==(const Course& rhs) const {
+    return enrollmentCapacity == rhs.enrollmentCapacity &&
+           enrolledStudentCount == rhs.enrolledStudentCount &&
+           courseLocation == rhs.courseLocation && instructorName == rhs.instructorName &&
+           courseTimeSlot == rhs.courseTimeSlot;
+}
+
+bool Course::operator!=(const Course& rhs) const {
+    return !operator==(rhs);
 }

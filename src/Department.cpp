@@ -1,10 +1,6 @@
 // Copyright 2024 Jason Han
-#include "Course.h"
 #include "Department.h"
-#include <map>
-#include <memory>
 #include <sstream>
-#include <string>
 
 /**
  * Constructs a new Department object with the given parameters.
@@ -17,7 +13,7 @@
 Department::Department(std::string deptCode,
                        std::map<std::string, std::shared_ptr<Course>> courses,
                        std::string departmentChair, int numberOfMajors)
-    : departmentChair(departmentChair), deptCode(deptCode), numberOfMajors(numberOfMajors),
+    : numberOfMajors(numberOfMajors), deptCode(deptCode), departmentChair(departmentChair),
       courses(courses) {}
 
 Department::Department() : numberOfMajors(0) {}
@@ -37,7 +33,7 @@ int Department::getNumberOfMajors() const {
  * @return The name of the department chair.
  */
 std::string Department::getDepartmentChair() const {
-    return "departmentChair";
+    return departmentChair;
 }
 
 /**
@@ -45,8 +41,22 @@ std::string Department::getDepartmentChair() const {
  *
  * @return A HashMap containing courses offered by the department.
  */
-std::map<std::string, std::shared_ptr<Course>> Department::getCourseSelection() const {
+const std::map<std::string, std::shared_ptr<Course>>& Department::getCourseSelection() const {
     return courses;
+}
+
+/**
+ * Returns a string representation of the department, including its code and the courses
+ offered.
+ *
+ * @return A string representing the department.
+ */
+std::string Department::display() const {
+    std::ostringstream result;
+    for (const auto& it : courses) {
+        result << deptCode << " " << it.first << ": " << it.second->display() << "\n";
+    }
+    return result.str();
 }
 
 /**
@@ -60,7 +70,9 @@ void Department::addPersonToMajor() {
  * Decreases the number of majors in the department by one if it's greater than zero.
  */
 void Department::dropPersonFromMajor() {
-    numberOfMajors--;
+    if (numberOfMajors > 0) {
+        numberOfMajors--;
+    }
 }
 
 /**
@@ -88,19 +100,6 @@ void Department::createCourse(std::string courseId, std::string instructorName,
     std::shared_ptr<Course> newCourse =
         std::make_shared<Course>(capacity, instructorName, courseLocation, courseTimeSlot);
     addCourse(courseId, newCourse);
-}
-
-/**
- * Returns a string representation of the department, including its code and the courses offered.
- *
- * @return A string representing the department.
- */
-std::string Department::display() const {
-    std::ostringstream result;
-    for (const auto& it : courses) {
-        result << deptCode << " " << it.first << ": " << it.second->display() << "\n";
-    }
-    return result.str();
 }
 
 void Department::serialize(std::ostream& out) const {
@@ -148,4 +147,22 @@ void Department::deserialize(std::istream& in) {
         course->deserialize(in);
         courses[courseId] = course;
     }
+}
+
+bool Department::operator==(const Department& rhs) const {
+    // Compare courses by value, not by pointer address.
+    for (const auto& [courseId, course] : courses) {
+        if (!rhs.courses.count(courseId)) {
+            return false;
+        }
+        if (*course.get() != *rhs.courses.at(courseId).get()) {
+            return false;
+        }
+    }
+    return numberOfMajors == rhs.numberOfMajors && deptCode == rhs.deptCode &&
+           departmentChair == rhs.departmentChair;
+}
+
+bool Department::operator!=(const Department& rhs) const {
+    return !operator==(rhs);
 }
