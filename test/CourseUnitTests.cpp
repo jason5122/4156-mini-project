@@ -65,3 +65,15 @@ TEST(CourseUnitTests, ReassignTest) {
     EXPECT_EQ(coms1004.getInstructorName(), "Adam Cannon");
     EXPECT_EQ(coms1004.getCourseTimeSlot(), "11:40-12:55");
 }
+
+TEST(CourseUnitTests, EqualityTest) {
+    Course c1{10, "Gail Kaiser", "501 NWC", "10:10-11:25"};
+    Course c2{10, "Gail Kaiser", "501 NWC", "10:10-11:25"};
+    EXPECT_EQ(c1, c2);
+}
+
+TEST(CourseUnitTests, InequalityTest) {
+    Course c1{10, "Gail Kaiser", "501 NWC", "10:10-11:25"};
+    Course c2{11, "Gail Kaiser", "501 NWC", "10:10-11:25"};
+    EXPECT_NE(c1, c2);
+}

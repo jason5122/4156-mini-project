@@ -90,3 +90,41 @@ TEST(DepartmentUnitTests, CreateCourseTest) {
     ieor.createCourse("3404", "Christopher J Dolan", "303 MUDD", "2:40-3:55", 80);
     EXPECT_EQ(ieor.getCourseSelection().size(), 2);
 }
+
+TEST(DepartmentUnitTests, EqualityTest) {
+    std::map<std::string, std::shared_ptr<Course>> courses;
+    auto ieor2500 = std::make_shared<Course>(50, "Uday Menon", "627 MUDD", "11:40-12:55");
+    ieor2500->setEnrolledStudentCount(52);
+    courses["2500"] = ieor2500;
+
+    Department d1("IEOR", courses, "Jay Sethuraman", 67);
+    Department d2("IEOR", courses, "Jay Sethuraman", 67);
+    EXPECT_EQ(d1, d2);
+}
+
+TEST(DepartmentUnitTests, InequalityByCourseMappingSizeTest) {
+    std::map<std::string, std::shared_ptr<Course>> courses1;
+    auto c1 = std::make_shared<Course>(50, "Uday Menon", "627 MUDD", "11:40-12:55");
+    c1->setEnrolledStudentCount(52);
+    courses1["2500"] = c1;
+
+    Department d1("IEOR", courses1, "Jay Sethuraman", 67);
+    Department d2("IEOR", {}, "Jay Sethuraman", 67);
+    EXPECT_NE(d1, d2);
+}
+
+TEST(DepartmentUnitTests, InequalityByCourseValuesTest) {
+    std::map<std::string, std::shared_ptr<Course>> courses1;
+    auto c1 = std::make_shared<Course>(50, "Uday Menon", "627 MUDD", "11:40-12:55");
+    c1->setEnrolledStudentCount(52);
+    courses1["2500"] = c1;
+
+    std::map<std::string, std::shared_ptr<Course>> courses2;
+    auto c2 = std::make_shared<Course>(50, "Uday Menon", "627 MUDD", "11:40-12:55");
+    c2->setEnrolledStudentCount(21);
+    courses1["2500"] = c2;
+
+    Department d1("IEOR", courses1, "Jay Sethuraman", 67);
+    Department d2("IEOR", courses2, "Jay Sethuraman", 67);
+    EXPECT_NE(d1, d2);
+}
