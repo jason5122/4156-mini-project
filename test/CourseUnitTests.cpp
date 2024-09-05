@@ -23,7 +23,7 @@ TEST(CourseUnitTests, DisplayTest) {
     Course testCourse{250, "Griffin Newbold", "417 IAB", "11:40-12:55"};
     std::string expectedResult =
         "\nInstructor: Griffin Newbold; Location: 417 IAB; Time: 11:40-12:55";
-    EXPECT_EQ(expectedResult, testCourse.display());
+    EXPECT_EQ(testCourse.display(), expectedResult);
 }
 
 TEST(CourseUnitTests, EnrollTest) {

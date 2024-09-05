@@ -20,7 +20,7 @@ endif()
 set(SOURCE_FILES src/Course.cpp src/Department.cpp src/MyFileDatabase.cpp src/RouteController.cpp
                  src/MyApp.cpp src/Globals.cpp
 )
-set(TEST_FILES test/CourseUnitTests.cpp)
+set(TEST_FILES test/CourseUnitTests.cpp test/DepartmentUnitTests.cpp)
 
 # Main project executable.
 add_executable(mini_project src/main.cpp ${SOURCE_FILES})

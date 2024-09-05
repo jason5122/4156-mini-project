@@ -15,16 +15,19 @@ public:
     Department();
 
     int getNumberOfMajors() const;
-    void serialize(std::ostream& out) const;
-    void deserialize(std::istream& in);
+    std::string getDepartmentChair() const;
+    std::map<std::string, std::shared_ptr<Course>> getCourseSelection() const;
+    std::string display() const;
+
     void addPersonToMajor();
     void dropPersonFromMajor();
+
     void addCourse(std::string courseId, std::shared_ptr<Course> course);
     void createCourse(std::string courseId, std::string instructorName, std::string courseLocation,
                       std::string courseTimeSlot, int capacity);
-    std::string display() const;
-    std::string getDepartmentChair() const;
-    std::map<std::string, std::shared_ptr<Course>> getCourseSelection() const;
+
+    void serialize(std::ostream& out) const;
+    void deserialize(std::istream& in);
 
 private:
     int numberOfMajors;
