@@ -15,7 +15,7 @@ endif()
 # TODO: Find a way to output coverage on each recompile, or separate this step out as a "coverage
 # only" thing.
 
-# set(CMAKE_CXX_FLAGS --coverage)
+set(CMAKE_CXX_FLAGS --coverage)
 
 set(SOURCE_FILES src/Course.cpp src/Department.cpp src/MyFileDatabase.cpp src/RouteController.cpp
                  src/MyApp.cpp src/Globals.cpp

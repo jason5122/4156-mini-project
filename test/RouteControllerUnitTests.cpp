@@ -111,12 +111,24 @@ TEST(RouteControllerUnitTests, IsCourseFullMockTest) {
     EXPECT_EQ(res404.code, 404);
     EXPECT_EQ(res404.body, "Department Not Found");
 
+    res404.body = "";
+    req404.url_params = crow::query_string{"?deptCode=IEOR&courseCode=9999"};
+    routeController.isCourseFull(req404, res404);
+    EXPECT_EQ(res404.code, 404);
+    EXPECT_EQ(res404.body, "Course Not Found");
+
     crow::request req400{};
     crow::response res400{};
     req400.url_params = crow::query_string{"?x=10"};
     routeController.isCourseFull(req400, res400);
     EXPECT_EQ(res400.code, 400);
     EXPECT_EQ(res400.body, "URL parameters must include deptCode");
+
+    res400.body = "";
+    req400.url_params = crow::query_string{"?deptCode=IEOR"};
+    routeController.isCourseFull(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include courseCode");
 }
 
 TEST(RouteControllerUnitTests, GetMajorCountFromDeptMockTest) {
@@ -189,12 +201,24 @@ TEST(RouteControllerUnitTests, FindCourseLocationMockTest) {
     EXPECT_EQ(res404.code, 404);
     EXPECT_EQ(res404.body, "Department Not Found");
 
+    res404.body = "";
+    req404.url_params = crow::query_string{"?deptCode=COMS&courseCode=9999"};
+    routeController.findCourseLocation(req404, res404);
+    EXPECT_EQ(res404.code, 404);
+    EXPECT_EQ(res404.body, "Course Not Found");
+
     crow::request req400{};
     crow::response res400{};
     req400.url_params = crow::query_string{"?x=10"};
     routeController.findCourseLocation(req400, res400);
     EXPECT_EQ(res400.code, 400);
     EXPECT_EQ(res400.body, "URL parameters must include deptCode");
+
+    res400.body = "";
+    req400.url_params = crow::query_string{"?deptCode=COMS"};
+    routeController.findCourseLocation(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include courseCode");
 }
 
 TEST(RouteControllerUnitTests, FindCourseInstructorMockTest) {
@@ -215,12 +239,24 @@ TEST(RouteControllerUnitTests, FindCourseInstructorMockTest) {
     EXPECT_EQ(res404.code, 404);
     EXPECT_EQ(res404.body, "Department Not Found");
 
+    res404.body = "";
+    req404.url_params = crow::query_string{"?deptCode=COMS&courseCode=9999"};
+    routeController.findCourseInstructor(req404, res404);
+    EXPECT_EQ(res404.code, 404);
+    EXPECT_EQ(res404.body, "Course Not Found");
+
     crow::request req400{};
     crow::response res400{};
     req400.url_params = crow::query_string{"?x=10"};
     routeController.findCourseInstructor(req400, res400);
     EXPECT_EQ(res400.code, 400);
     EXPECT_EQ(res400.body, "URL parameters must include deptCode");
+
+    res400.body = "";
+    req400.url_params = crow::query_string{"?deptCode=COMS"};
+    routeController.findCourseInstructor(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include courseCode");
 }
 
 TEST(RouteControllerUnitTests, FindCourseTimeMockTest) {
@@ -241,12 +277,24 @@ TEST(RouteControllerUnitTests, FindCourseTimeMockTest) {
     EXPECT_EQ(res404.code, 404);
     EXPECT_EQ(res404.body, "Department Not Found");
 
+    res404.body = "";
+    req404.url_params = crow::query_string{"?deptCode=COMS&courseCode=9999"};
+    routeController.findCourseTime(req404, res404);
+    EXPECT_EQ(res404.code, 404);
+    EXPECT_EQ(res404.body, "Course Not Found");
+
     crow::request req400{};
     crow::response res400{};
     req400.url_params = crow::query_string{"?x=10"};
     routeController.findCourseTime(req400, res400);
     EXPECT_EQ(res400.code, 400);
     EXPECT_EQ(res400.body, "URL parameters must include deptCode");
+
+    res400.body = "";
+    req400.url_params = crow::query_string{"?deptCode=COMS"};
+    routeController.findCourseTime(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include courseCode");
 }
 
 TEST(RouteControllerUnitTests, AddMajorToDeptMockTest) {
@@ -319,12 +367,30 @@ TEST(RouteControllerUnitTests, SetEnrollmentCountMockTest) {
     EXPECT_EQ(res404.code, 404);
     EXPECT_EQ(res404.body, "Department Not Found");
 
+    res404.body = "";
+    req404.url_params = crow::query_string{"?deptCode=COMS&courseCode=9999&count=42"};
+    routeController.setEnrollmentCount(req404, res404);
+    EXPECT_EQ(res404.code, 404);
+    EXPECT_EQ(res404.body, "Course Not Found");
+
     crow::request req400{};
     crow::response res400{};
     req400.url_params = crow::query_string{"?deptCode=COMS&courseCode=3203"};
     routeController.setEnrollmentCount(req400, res400);
     EXPECT_EQ(res400.code, 400);
     EXPECT_EQ(res400.body, "URL parameters must include count");
+
+    res400.body = "";
+    req400.url_params = crow::query_string{"?deptCode=COMS"};
+    routeController.setEnrollmentCount(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include courseCode");
+
+    res400.body = "";
+    req400.url_params = crow::query_string{"?x=10"};
+    routeController.setEnrollmentCount(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include deptCode");
 }
 
 TEST(RouteControllerUnitTests, SetCourseLocationMockTest) {
@@ -347,12 +413,31 @@ TEST(RouteControllerUnitTests, SetCourseLocationMockTest) {
     EXPECT_EQ(res404.code, 404);
     EXPECT_EQ(res404.body, "Department Not Found");
 
+    res404.body = "";
+    req404.url_params =
+        crow::query_string{"?deptCode=COMS&courseCode=9999&location=402%20CHANDLER"};
+    routeController.setCourseLocation(req404, res404);
+    EXPECT_EQ(res404.code, 404);
+    EXPECT_EQ(res404.body, "Course Not Found");
+
     crow::request req400{};
     crow::response res400{};
     req400.url_params = crow::query_string{"?deptCode=COMS&courseCode=3203"};
     routeController.setCourseLocation(req400, res400);
     EXPECT_EQ(res400.code, 400);
     EXPECT_EQ(res400.body, "URL parameters must include location");
+
+    res400.body = "";
+    req400.url_params = crow::query_string{"?deptCode=COMS"};
+    routeController.setCourseLocation(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include courseCode");
+
+    res400.body = "";
+    req400.url_params = crow::query_string{"?x=10"};
+    routeController.setCourseLocation(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include deptCode");
 }
 
 TEST(RouteControllerUnitTests, SetCourseInstructorMockTest) {
@@ -374,12 +459,30 @@ TEST(RouteControllerUnitTests, SetCourseInstructorMockTest) {
     EXPECT_EQ(res404.code, 404);
     EXPECT_EQ(res404.body, "Department Not Found");
 
+    res404.body = "";
+    req404.url_params = crow::query_string{"?deptCode=COMS&courseCode=9999&instructor=Jae%20Lee"};
+    routeController.setCourseInstructor(req404, res404);
+    EXPECT_EQ(res404.code, 404);
+    EXPECT_EQ(res404.body, "Course Not Found");
+
     crow::request req400{};
     crow::response res400{};
     req400.url_params = crow::query_string{"?deptCode=COMS&courseCode=3203"};
     routeController.setCourseInstructor(req400, res400);
     EXPECT_EQ(res400.code, 400);
     EXPECT_EQ(res400.body, "URL parameters must include instructor");
+
+    res400.body = "";
+    req400.url_params = crow::query_string{"?deptCode=COMS"};
+    routeController.setCourseInstructor(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include courseCode");
+
+    res400.body = "";
+    req400.url_params = crow::query_string{"?x=10"};
+    routeController.setCourseInstructor(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include deptCode");
 }
 
 TEST(RouteControllerUnitTests, SetCourseTimeMockTest) {
@@ -401,12 +504,30 @@ TEST(RouteControllerUnitTests, SetCourseTimeMockTest) {
     EXPECT_EQ(res404.code, 404);
     EXPECT_EQ(res404.body, "Department Not Found");
 
+    res404.body = "";
+    req404.url_params = crow::query_string{"?deptCode=COMS&courseCode=9999&time=10:10-11:25"};
+    routeController.setCourseTime(req404, res404);
+    EXPECT_EQ(res404.code, 404);
+    EXPECT_EQ(res404.body, "Course Not Found");
+
     crow::request req400{};
     crow::response res400{};
     req400.url_params = crow::query_string{"?deptCode=COMS&courseCode=3203"};
     routeController.setCourseTime(req400, res400);
     EXPECT_EQ(res400.code, 400);
     EXPECT_EQ(res400.body, "URL parameters must include time");
+
+    res400.body = "";
+    req400.url_params = crow::query_string{"?deptCode=COMS"};
+    routeController.setCourseTime(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include courseCode");
+
+    res400.body = "";
+    req400.url_params = crow::query_string{"?x=10"};
+    routeController.setCourseTime(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include deptCode");
 }
 
 TEST(RouteControllerUnitTests, DropStudentFromCourseMockTest) {
@@ -420,6 +541,18 @@ TEST(RouteControllerUnitTests, DropStudentFromCourseMockTest) {
     EXPECT_EQ(res200.code, 200);
     EXPECT_EQ(res200.body, "Student has been dropped");
 
+    // Set enrollment to 0 for testing.
+    crow::request req{};
+    crow::response res{};
+    req.url_params = crow::query_string{"?deptCode=CHEM&courseCode=1500&count=0"};
+    routeController.setEnrollmentCount(req, res);
+
+    res200.body = "";
+    req200.url_params = crow::query_string{"?deptCode=CHEM&courseCode=1500"};
+    routeController.dropStudentFromCourse(req200, res200);
+    EXPECT_EQ(res200.code, 400);
+    EXPECT_EQ(res200.body, "Student has not been dropped");
+
     crow::request req404{};
     crow::response res404{};
     req404.url_params = crow::query_string{"?deptCode=NONEXISTENT&courseCode=3203"};
@@ -427,10 +560,22 @@ TEST(RouteControllerUnitTests, DropStudentFromCourseMockTest) {
     EXPECT_EQ(res404.code, 404);
     EXPECT_EQ(res404.body, "Department Not Found");
 
+    res404.body = "";
+    req404.url_params = crow::query_string{"?deptCode=COMS&courseCode=9999"};
+    routeController.dropStudentFromCourse(req404, res404);
+    EXPECT_EQ(res404.code, 404);
+    EXPECT_EQ(res404.body, "Course Not Found");
+
     crow::request req400{};
     crow::response res400{};
     req400.url_params = crow::query_string{"?deptCode=COMS"};
     routeController.dropStudentFromCourse(req400, res400);
     EXPECT_EQ(res400.code, 400);
     EXPECT_EQ(res400.body, "URL parameters must include courseCode");
+
+    res400.body = "";
+    req400.url_params = crow::query_string{"?x=10"};
+    routeController.dropStudentFromCourse(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include deptCode");
 }
