@@ -39,8 +39,13 @@ void RouteController::index(crow::response& res) {
 void RouteController::retrieveDepartment(const crow::request& req, crow::response& res) {
     try {
         auto deptCode = req.url_params.get("deptCode");
-        auto departmentMapping = myFileDatabase->getDepartmentMapping();
+        if (!deptCode) {
+            res.code = 400;
+            res.write("URL parameters must include deptCode");
+            return;
+        }
 
+        auto departmentMapping = myFileDatabase->getDepartmentMapping();
         auto it = departmentMapping.find(deptCode);
         if (it == departmentMapping.end()) {
             res.code = 404;
@@ -72,7 +77,17 @@ void RouteController::retrieveDepartment(const crow::request& req, crow::respons
 void RouteController::retrieveCourse(const crow::request& req, crow::response& res) {
     try {
         auto deptCode = req.url_params.get("deptCode");
-        auto courseCode = std::stoi(req.url_params.get("courseCode"));
+        auto courseCode = req.url_params.get("courseCode");
+        if (!deptCode) {
+            res.code = 400;
+            res.write("URL parameters must include deptCode");
+            return;
+        }
+        if (!courseCode) {
+            res.code = 400;
+            res.write("URL parameters must include courseCode");
+            return;
+        }
 
         auto departmentMapping = myFileDatabase->getDepartmentMapping();
         auto deptIt = departmentMapping.find(deptCode);
@@ -82,7 +97,7 @@ void RouteController::retrieveCourse(const crow::request& req, crow::response& r
             res.write("Department Not Found");
         } else {
             auto coursesMapping = deptIt->second.getCourseSelection();
-            auto courseIt = coursesMapping.find(std::to_string(courseCode));
+            auto courseIt = coursesMapping.find(courseCode);
 
             if (courseIt == coursesMapping.end()) {
                 res.code = 404;
@@ -114,7 +129,17 @@ void RouteController::retrieveCourse(const crow::request& req, crow::response& r
 void RouteController::isCourseFull(const crow::request& req, crow::response& res) {
     try {
         auto deptCode = req.url_params.get("deptCode");
-        auto courseCode = std::stoi(req.url_params.get("courseCode"));
+        auto courseCode = req.url_params.get("courseCode");
+        if (!deptCode) {
+            res.code = 400;
+            res.write("URL parameters must include deptCode");
+            return;
+        }
+        if (!courseCode) {
+            res.code = 400;
+            res.write("URL parameters must include courseCode");
+            return;
+        }
 
         auto departmentMapping = myFileDatabase->getDepartmentMapping();
         auto deptIt = departmentMapping.find(deptCode);
@@ -124,7 +149,7 @@ void RouteController::isCourseFull(const crow::request& req, crow::response& res
             res.write("Department Not Found");
         } else {
             auto coursesMapping = deptIt->second.getCourseSelection();
-            auto courseIt = coursesMapping.find(std::to_string(courseCode));
+            auto courseIt = coursesMapping.find(courseCode);
 
             if (courseIt == coursesMapping.end()) {
                 res.code = 404;
@@ -155,6 +180,11 @@ void RouteController::isCourseFull(const crow::request& req, crow::response& res
 void RouteController::getMajorCountFromDept(const crow::request& req, crow::response& res) {
     try {
         auto deptCode = req.url_params.get("deptCode");
+        if (!deptCode) {
+            res.code = 400;
+            res.write("URL parameters must include deptCode");
+            return;
+        }
 
         auto departmentMapping = myFileDatabase->getDepartmentMapping();
         auto deptIt = departmentMapping.find(deptCode);
@@ -186,6 +216,11 @@ void RouteController::getMajorCountFromDept(const crow::request& req, crow::resp
 void RouteController::identifyDeptChair(const crow::request& req, crow::response& res) {
     try {
         auto deptCode = req.url_params.get("deptCode");
+        if (!deptCode) {
+            res.code = 400;
+            res.write("URL parameters must include deptCode");
+            return;
+        }
 
         auto departmentMapping = myFileDatabase->getDepartmentMapping();
         auto deptIt = departmentMapping.find(deptCode);
@@ -220,7 +255,17 @@ void RouteController::identifyDeptChair(const crow::request& req, crow::response
 void RouteController::findCourseLocation(const crow::request& req, crow::response& res) {
     try {
         auto deptCode = req.url_params.get("deptCode");
-        auto courseCode = std::stoi(req.url_params.get("courseCode"));
+        auto courseCode = req.url_params.get("courseCode");
+        if (!deptCode) {
+            res.code = 400;
+            res.write("URL parameters must include deptCode");
+            return;
+        }
+        if (!courseCode) {
+            res.code = 400;
+            res.write("URL parameters must include courseCode");
+            return;
+        }
 
         auto departmentMapping = myFileDatabase->getDepartmentMapping();
         auto deptIt = departmentMapping.find(deptCode);
@@ -230,7 +275,7 @@ void RouteController::findCourseLocation(const crow::request& req, crow::respons
             res.write("Department Not Found");
         } else {
             auto coursesMapping = deptIt->second.getCourseSelection();
-            auto courseIt = coursesMapping.find(std::to_string(courseCode));
+            auto courseIt = coursesMapping.find(courseCode);
 
             if (courseIt == coursesMapping.end()) {
                 res.code = 404;
@@ -264,7 +309,17 @@ void RouteController::findCourseLocation(const crow::request& req, crow::respons
 void RouteController::findCourseInstructor(const crow::request& req, crow::response& res) {
     try {
         auto deptCode = req.url_params.get("deptCode");
-        auto courseCode = std::stoi(req.url_params.get("courseCode"));
+        auto courseCode = req.url_params.get("courseCode");
+        if (!deptCode) {
+            res.code = 400;
+            res.write("URL parameters must include deptCode");
+            return;
+        }
+        if (!courseCode) {
+            res.code = 400;
+            res.write("URL parameters must include courseCode");
+            return;
+        }
 
         auto departmentMapping = myFileDatabase->getDepartmentMapping();
         auto deptIt = departmentMapping.find(deptCode);
@@ -274,7 +329,7 @@ void RouteController::findCourseInstructor(const crow::request& req, crow::respo
             res.write("Department Not Found");
         } else {
             auto coursesMapping = deptIt->second.getCourseSelection();
-            auto courseIt = coursesMapping.find(std::to_string(courseCode));
+            auto courseIt = coursesMapping.find(courseCode);
 
             if (courseIt == coursesMapping.end()) {
                 res.code = 404;
@@ -309,7 +364,17 @@ void RouteController::findCourseInstructor(const crow::request& req, crow::respo
 void RouteController::findCourseTime(const crow::request& req, crow::response& res) {
     try {
         auto deptCode = req.url_params.get("deptCode");
-        auto courseCode = std::stoi(req.url_params.get("courseCode"));
+        auto courseCode = req.url_params.get("courseCode");
+        if (!deptCode) {
+            res.code = 400;
+            res.write("URL parameters must include deptCode");
+            return;
+        }
+        if (!courseCode) {
+            res.code = 400;
+            res.write("URL parameters must include courseCode");
+            return;
+        }
 
         auto departmentMapping = myFileDatabase->getDepartmentMapping();
         auto deptIt = departmentMapping.find(deptCode);
@@ -319,7 +384,7 @@ void RouteController::findCourseTime(const crow::request& req, crow::response& r
             res.write("Department Not Found");
         } else {
             auto coursesMapping = deptIt->second.getCourseSelection();
-            auto courseIt = coursesMapping.find(std::to_string(courseCode));
+            auto courseIt = coursesMapping.find(courseCode);
 
             if (courseIt == coursesMapping.end()) {
                 res.code = 404;
@@ -348,6 +413,11 @@ void RouteController::findCourseTime(const crow::request& req, crow::response& r
 void RouteController::addMajorToDept(const crow::request& req, crow::response& res) {
     try {
         auto deptCode = req.url_params.get("deptCode");
+        if (!deptCode) {
+            res.code = 400;
+            res.write("URL parameters must include deptCode");
+            return;
+        }
 
         auto departmentMapping = myFileDatabase->getDepartmentMapping();
         auto deptIt = departmentMapping.find(deptCode);
@@ -370,18 +440,33 @@ void RouteController::addMajorToDept(const crow::request& req, crow::response& r
 void RouteController::setEnrollmentCount(const crow::request& req, crow::response& res) {
     try {
         auto deptCode = req.url_params.get("deptCode");
-        auto courseCode = std::stoi(req.url_params.get("courseCode"));
-        auto count = std::stoi(req.url_params.get("count"));
+        auto courseCode = req.url_params.get("courseCode");
+        auto count = req.url_params.get("count");
+        if (!deptCode) {
+            res.code = 400;
+            res.write("URL parameters must include deptCode");
+            return;
+        }
+        if (!courseCode) {
+            res.code = 400;
+            res.write("URL parameters must include courseCode");
+            return;
+        }
+        if (!count) {
+            res.code = 400;
+            res.write("URL parameters must include count");
+            return;
+        }
 
         auto departmentMapping = myFileDatabase->getDepartmentMapping();
         auto deptIt = departmentMapping.find(deptCode);
 
         if (deptIt != departmentMapping.end()) {
             auto coursesMapping = deptIt->second.getCourseSelection();
-            auto courseIt = coursesMapping.find(std::to_string(courseCode));
+            auto courseIt = coursesMapping.find(courseCode);
 
             if (courseIt != coursesMapping.end()) {
-                courseIt->second->setEnrolledStudentCount(count);
+                courseIt->second->setEnrolledStudentCount(std::stoi(count));
                 res.code = 200;
                 res.write("Attribute was updated successfully.");
             } else {
@@ -402,15 +487,30 @@ void RouteController::setEnrollmentCount(const crow::request& req, crow::respons
 void RouteController::setCourseLocation(const crow::request& req, crow::response& res) {
     try {
         auto deptCode = req.url_params.get("deptCode");
-        auto courseCode = std::stoi(req.url_params.get("courseCode"));
+        auto courseCode = req.url_params.get("courseCode");
         auto location = req.url_params.get("location");
+        if (!deptCode) {
+            res.code = 400;
+            res.write("URL parameters must include deptCode");
+            return;
+        }
+        if (!courseCode) {
+            res.code = 400;
+            res.write("URL parameters must include courseCode");
+            return;
+        }
+        if (!location) {
+            res.code = 400;
+            res.write("URL parameters must include location");
+            return;
+        }
 
         auto departmentMapping = myFileDatabase->getDepartmentMapping();
         auto deptIt = departmentMapping.find(deptCode);
 
         if (deptIt != departmentMapping.end()) {
             auto coursesMapping = deptIt->second.getCourseSelection();
-            auto courseIt = coursesMapping.find(std::to_string(courseCode));
+            auto courseIt = coursesMapping.find(courseCode);
 
             if (courseIt != coursesMapping.end()) {
                 courseIt->second->reassignLocation(location);
@@ -433,17 +533,30 @@ void RouteController::setCourseLocation(const crow::request& req, crow::response
 void RouteController::setCourseInstructor(const crow::request& req, crow::response& res) {
     try {
         auto deptCode = req.url_params.get("deptCode");
-        auto courseCodeStr = req.url_params.get("courseCode");
+        auto courseCode = req.url_params.get("courseCode");
         auto instructor = req.url_params.get("instructor");
-
-        int courseCode = std::stoi(courseCodeStr);
+        if (!deptCode) {
+            res.code = 400;
+            res.write("URL parameters must include deptCode");
+            return;
+        }
+        if (!courseCode) {
+            res.code = 400;
+            res.write("URL parameters must include courseCode");
+            return;
+        }
+        if (!instructor) {
+            res.code = 400;
+            res.write("URL parameters must include instructor");
+            return;
+        }
 
         auto departmentMapping = myFileDatabase->getDepartmentMapping();
         auto deptIt = departmentMapping.find(deptCode);
 
         if (deptIt != departmentMapping.end()) {
             auto coursesMapping = deptIt->second.getCourseSelection();
-            auto courseIt = coursesMapping.find(std::to_string(courseCode));
+            auto courseIt = coursesMapping.find(courseCode);
 
             if (courseIt != coursesMapping.end()) {
                 courseIt->second->reassignInstructor(instructor);
@@ -467,15 +580,30 @@ void RouteController::setCourseInstructor(const crow::request& req, crow::respon
 void RouteController::setCourseTime(const crow::request& req, crow::response& res) {
     try {
         auto deptCode = req.url_params.get("deptCode");
-        auto courseCode = std::stoi(req.url_params.get("courseCode"));
+        auto courseCode = req.url_params.get("courseCode");
         auto time = req.url_params.get("time");
+        if (!deptCode) {
+            res.code = 400;
+            res.write("URL parameters must include deptCode");
+            return;
+        }
+        if (!courseCode) {
+            res.code = 400;
+            res.write("URL parameters must include courseCode");
+            return;
+        }
+        if (!time) {
+            res.code = 400;
+            res.write("URL parameters must include time");
+            return;
+        }
 
         auto departmentMapping = myFileDatabase->getDepartmentMapping();
         auto deptIt = departmentMapping.find(deptCode);
 
         if (deptIt != departmentMapping.end()) {
             auto coursesMapping = deptIt->second.getCourseSelection();
-            auto courseIt = coursesMapping.find(std::to_string(courseCode));
+            auto courseIt = coursesMapping.find(courseCode);
 
             if (courseIt != coursesMapping.end()) {
                 courseIt->second->reassignTime(time);
@@ -507,6 +635,11 @@ void RouteController::setCourseTime(const crow::request& req, crow::response& re
 void RouteController::removeMajorFromDept(const crow::request& req, crow::response& res) {
     try {
         auto deptCode = req.url_params.get("deptCode");
+        if (!deptCode) {
+            res.code = 400;
+            res.write("URL parameters must include deptCode");
+            return;
+        }
 
         auto departmentMapping = myFileDatabase->getDepartmentMapping();
         auto deptIt = departmentMapping.find(deptCode);
@@ -540,7 +673,17 @@ void RouteController::removeMajorFromDept(const crow::request& req, crow::respon
 void RouteController::dropStudentFromCourse(const crow::request& req, crow::response& res) {
     try {
         auto deptCode = req.url_params.get("deptCode");
-        auto courseCode = std::stoi(req.url_params.get("courseCode"));
+        auto courseCode = req.url_params.get("courseCode");
+        if (!deptCode) {
+            res.code = 400;
+            res.write("URL parameters must include deptCode");
+            return;
+        }
+        if (!courseCode) {
+            res.code = 400;
+            res.write("URL parameters must include courseCode");
+            return;
+        }
 
         auto departmentMapping = myFileDatabase->getDepartmentMapping();
         auto deptIt = departmentMapping.find(deptCode);
@@ -550,7 +693,7 @@ void RouteController::dropStudentFromCourse(const crow::request& req, crow::resp
             res.write("Department Not Found");
         } else {
             auto coursesMapping = deptIt->second.getCourseSelection();
-            auto courseIt = coursesMapping.find(std::to_string(courseCode));
+            auto courseIt = coursesMapping.find(courseCode);
 
             if (courseIt == coursesMapping.end()) {
                 res.code = 404;

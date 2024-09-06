@@ -1,62 +1,26 @@
 // Copyright 2024 Jason Han
+#include "MyApp.h"
 #include "RouteController.h"
-#include <boost/asio/connect.hpp>
-#include <boost/asio/ip/tcp.hpp>
-#include <boost/beast/core.hpp>
-#include <boost/beast/http.hpp>
-#include <boost/beast/version.hpp>
-#include <boost/lexical_cast.hpp>
 #include <gtest/gtest.h>
-
-namespace beast = boost::beast;
-namespace http = beast::http;
-namespace net = boost::asio;
-using tcp = net::ip::tcp;
-
-// NOTE: Make sure the server is running before executing these tests!
 
 namespace {
 
-std::string MakeRequest(const std::string& endpoint, http::verb verb) {
-    net::io_context ioc;
-    tcp::resolver resolver{ioc};
-    beast::tcp_stream stream{ioc};
+inline void SetUpDatabase(RouteController& routeController) {
+    MyApp::run("setup");
+    MyApp::onTermination();
+    MyApp::run("run");
 
-    const auto host = "localhost";
-    const auto port = "8080";
-
-    const auto results = resolver.resolve(host, port);
-    stream.connect(results);
-
-    http::request<http::string_body> req{verb, endpoint, 10};
-    req.set(http::field::host, host);
-
-    http::write(stream, req);
-
-    beast::flat_buffer buffer;
-    http::response<http::string_body> res;
-    http::read(stream, buffer, res);
-    auto body = boost::lexical_cast<std::string>(res.body());
-
-    beast::error_code ec;
-    auto error_code [[maybe_unused]] = stream.socket().shutdown(tcp::socket::shutdown_both, ec);
-
-    return body;
-}
-
-std::string Fetch(const std::string& endpoint) {
-    return MakeRequest(endpoint, http::verb::get);
-}
-
-std::string Patch(const std::string& endpoint) {
-    return MakeRequest(endpoint, http::verb::patch);
+    crow::SimpleApp app;
+    routeController.initRoutes(app);
+    routeController.setDatabase(MyApp::getDatabase());
 }
 
 }
 
-TEST(RouteControllerUnitTests, RetrieveDepartmentTest) {
-    const auto endpoint = "/retrieveDept?deptCode=COMS";
-    auto body = Fetch(endpoint);
+TEST(RouteControllerUnitTests, RetrieveDepartmentMockTest) {
+    RouteController routeController;
+    SetUpDatabase(routeController);
+
     auto expected = R"(COMS 1004: 
 Instructor: Adam Cannon; Location: 417 IAB; Time: 11:40-12:55
 COMS 3134: 
@@ -74,110 +38,399 @@ Instructor: Daniel Rubenstein; Location: 207 Math; Time: 10:10-11:25
 COMS 4156: 
 Instructor: Gail Kaiser; Location: 501 NWC; Time: 10:10-11:25
 )";
-    EXPECT_EQ(body, expected);
+
+    crow::request req200{};
+    crow::response res200{};
+    req200.url_params = crow::query_string{"?deptCode=COMS"};
+    routeController.retrieveDepartment(req200, res200);
+    EXPECT_EQ(res200.code, 200);
+    EXPECT_EQ(res200.body, expected);
+
+    crow::request req404{};
+    crow::response res404{};
+    req404.url_params = crow::query_string{"?deptCode=NONEXISTENT"};
+    routeController.retrieveDepartment(req404, res404);
+    EXPECT_EQ(res404.code, 404);
+    EXPECT_EQ(res404.body, "Department Not Found");
+
+    crow::request req400{};
+    crow::response res400{};
+    req400.url_params = crow::query_string{"?x=42"};
+    routeController.retrieveDepartment(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include deptCode");
 }
 
-TEST(RouteControllerUnitTests, RetrieveCourseTest) {
-    const auto endpoint = "/retrieveCourse?deptCode=COMS&courseCode=3134";
-    auto body = Fetch(endpoint);
-    auto expected = "\nInstructor: Brian Borowski; Location: 301 URIS; Time: 4:10-5:25";
-    EXPECT_EQ(body, expected);
+TEST(RouteControllerUnitTests, RetrieveCourseMockTest) {
+    RouteController routeController;
+    SetUpDatabase(routeController);
+
+    crow::request req200{};
+    crow::response res200{};
+    req200.url_params = crow::query_string{"?deptCode=COMS&courseCode=3134"};
+    routeController.retrieveCourse(req200, res200);
+    EXPECT_EQ(res200.code, 200);
+    EXPECT_EQ(res200.body, "\nInstructor: Brian Borowski; Location: 301 URIS; Time: 4:10-5:25");
+
+    crow::request req404{};
+    crow::response res404{};
+    req404.url_params = crow::query_string{"?deptCode=COMS&courseCode=9999"};
+    routeController.retrieveCourse(req404, res404);
+    EXPECT_EQ(res404.code, 404);
+    EXPECT_EQ(res404.body, "Course Not Found");
+
+    crow::request req400{};
+    crow::response res400{};
+    req400.url_params = crow::query_string{"?deptCode=COMS"};
+    routeController.retrieveCourse(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include courseCode");
 }
 
-TEST(RouteControllerUnitTests, IsCourseFullTest) {
-    const auto endpoint1 = "/isCourseFull?deptCode=ECON&courseCode=3211";
-    auto body1 = Fetch(endpoint1);
-    auto expected1 = "false";
-    EXPECT_EQ(body1, expected1);
+TEST(RouteControllerUnitTests, IsCourseFullMockTest) {
+    RouteController routeController;
+    SetUpDatabase(routeController);
 
-    const auto endpoint2 = "/isCourseFull?deptCode=IEOR&courseCode=2500";
-    auto body2 = Fetch(endpoint2);
-    auto expected2 = "true";
-    EXPECT_EQ(body2, expected2);
+    crow::request req200{};
+    crow::response res200{};
+    req200.url_params = crow::query_string{"?deptCode=ECON&courseCode=3211"};
+    routeController.isCourseFull(req200, res200);
+    EXPECT_EQ(res200.code, 200);
+    EXPECT_EQ(res200.body, "false");
+
+    res200.body = "";
+    req200.url_params = crow::query_string{"?deptCode=IEOR&courseCode=2500"};
+    routeController.isCourseFull(req200, res200);
+    EXPECT_EQ(res200.code, 200);
+    EXPECT_EQ(res200.body, "true");
+
+    crow::request req404{};
+    crow::response res404{};
+    req404.url_params = crow::query_string{"?deptCode=NONEXISTENT&courseCode=3211"};
+    routeController.isCourseFull(req404, res404);
+    EXPECT_EQ(res404.code, 404);
+    EXPECT_EQ(res404.body, "Department Not Found");
+
+    crow::request req400{};
+    crow::response res400{};
+    req400.url_params = crow::query_string{"?x=10"};
+    routeController.isCourseFull(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include deptCode");
 }
 
-TEST(RouteControllerUnitTests, GetMajorCountFromDeptTest) {
-    const auto endpoint = "/getMajorCountFromDept?deptCode=COMS";
-    auto body = Fetch(endpoint);
-    auto expected = "There are: 2700 majors in the department";
-    EXPECT_EQ(body, expected);
+TEST(RouteControllerUnitTests, GetMajorCountFromDeptMockTest) {
+    RouteController routeController;
+    SetUpDatabase(routeController);
+
+    crow::request req200{};
+    crow::response res200{};
+    req200.url_params = crow::query_string{"?deptCode=COMS"};
+    routeController.getMajorCountFromDept(req200, res200);
+    EXPECT_EQ(res200.code, 200);
+    EXPECT_EQ(res200.body, "There are: 2700 majors in the department");
+
+    crow::request req404{};
+    crow::response res404{};
+    req404.url_params = crow::query_string{"?deptCode=NONEXISTENT"};
+    routeController.getMajorCountFromDept(req404, res404);
+    EXPECT_EQ(res404.code, 404);
+    EXPECT_EQ(res404.body, "Department Not Found");
+
+    crow::request req400{};
+    crow::response res400{};
+    req400.url_params = crow::query_string{"?x=10"};
+    routeController.getMajorCountFromDept(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include deptCode");
 }
 
-TEST(RouteControllerUnitTests, IdentifyDeptChairTest) {
-    const auto endpoint = "/idDeptChair?deptCode=COMS";
-    auto body = Fetch(endpoint);
-    auto expected = "Luca Carloni is the department chair.";
-    EXPECT_EQ(body, expected);
+TEST(RouteControllerUnitTests, IdentifyDeptChairMockTest) {
+    RouteController routeController;
+    SetUpDatabase(routeController);
+
+    crow::request req200{};
+    crow::response res200{};
+    req200.url_params = crow::query_string{"?deptCode=COMS"};
+    routeController.identifyDeptChair(req200, res200);
+    EXPECT_EQ(res200.code, 200);
+    EXPECT_EQ(res200.body, "Luca Carloni is the department chair.");
+
+    crow::request req404{};
+    crow::response res404{};
+    req404.url_params = crow::query_string{"?deptCode=NONEXISTENT"};
+    routeController.identifyDeptChair(req404, res404);
+    EXPECT_EQ(res404.code, 404);
+    EXPECT_EQ(res404.body, "Department Not Found");
+
+    crow::request req400{};
+    crow::response res400{};
+    req400.url_params = crow::query_string{"?x=10"};
+    routeController.identifyDeptChair(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include deptCode");
 }
 
-TEST(RouteControllerUnitTests, FindCourseLocationTest) {
-    const auto endpoint = "/findCourseLocation?deptCode=COMS&courseCode=3203";
-    auto body = Fetch(endpoint);
-    auto expected = "301 URIS is where the course is located.";
-    EXPECT_EQ(body, expected);
+TEST(RouteControllerUnitTests, FindCourseLocationMockTest) {
+    RouteController routeController;
+    SetUpDatabase(routeController);
+
+    crow::request req200{};
+    crow::response res200{};
+    req200.url_params = crow::query_string{"?deptCode=COMS&courseCode=3203"};
+    routeController.findCourseLocation(req200, res200);
+    EXPECT_EQ(res200.code, 200);
+    EXPECT_EQ(res200.body, "301 URIS is where the course is located.");
+
+    crow::request req404{};
+    crow::response res404{};
+    req404.url_params = crow::query_string{"?deptCode=NONEXISTENT&courseCode=3203"};
+    routeController.findCourseLocation(req404, res404);
+    EXPECT_EQ(res404.code, 404);
+    EXPECT_EQ(res404.body, "Department Not Found");
+
+    crow::request req400{};
+    crow::response res400{};
+    req400.url_params = crow::query_string{"?x=10"};
+    routeController.findCourseLocation(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include deptCode");
 }
 
-TEST(RouteControllerUnitTests, FindCourseInstructorTest) {
-    const auto endpoint = "/findCourseInstructor?deptCode=COMS&courseCode=3203";
-    auto body = Fetch(endpoint);
-    auto expected = "Ansaf Salleb-Aouissi is the instructor for the course.";
-    EXPECT_EQ(body, expected);
+TEST(RouteControllerUnitTests, FindCourseInstructorMockTest) {
+    RouteController routeController;
+    SetUpDatabase(routeController);
+
+    crow::request req200{};
+    crow::response res200{};
+    req200.url_params = crow::query_string{"?deptCode=COMS&courseCode=3203"};
+    routeController.findCourseInstructor(req200, res200);
+    EXPECT_EQ(res200.code, 200);
+    EXPECT_EQ(res200.body, "Ansaf Salleb-Aouissi is the instructor for the course.");
+
+    crow::request req404{};
+    crow::response res404{};
+    req404.url_params = crow::query_string{"?deptCode=NONEXISTENT&courseCode=3203"};
+    routeController.findCourseInstructor(req404, res404);
+    EXPECT_EQ(res404.code, 404);
+    EXPECT_EQ(res404.body, "Department Not Found");
+
+    crow::request req400{};
+    crow::response res400{};
+    req400.url_params = crow::query_string{"?x=10"};
+    routeController.findCourseInstructor(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include deptCode");
 }
 
-TEST(RouteControllerUnitTests, FindCourseTimeTest) {
-    const auto endpoint = "/findCourseTime?deptCode=COMS&courseCode=3203";
-    auto body = Fetch(endpoint);
-    auto expected = "The course meets at: 10:10-11:25";
-    EXPECT_EQ(body, expected);
+TEST(RouteControllerUnitTests, FindCourseTimeMockTest) {
+    RouteController routeController;
+    SetUpDatabase(routeController);
+
+    crow::request req200{};
+    crow::response res200{};
+    req200.url_params = crow::query_string{"?deptCode=COMS&courseCode=3203"};
+    routeController.findCourseTime(req200, res200);
+    EXPECT_EQ(res200.code, 200);
+    EXPECT_EQ(res200.body, "The course meets at: 10:10-11:25");
+
+    crow::request req404{};
+    crow::response res404{};
+    req404.url_params = crow::query_string{"?deptCode=NONEXISTENT&courseCode=3203"};
+    routeController.findCourseTime(req404, res404);
+    EXPECT_EQ(res404.code, 404);
+    EXPECT_EQ(res404.body, "Department Not Found");
+
+    crow::request req400{};
+    crow::response res400{};
+    req400.url_params = crow::query_string{"?x=10"};
+    routeController.findCourseTime(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include deptCode");
 }
 
-TEST(RouteControllerUnitTests, AddMajorToDeptTest) {
-    const auto endpoint = "/addMajorToDept?deptCode=COMS";
-    auto body = Fetch(endpoint);
-    auto expected = "Attribute was updated successfully";
-    EXPECT_EQ(body, expected);
+TEST(RouteControllerUnitTests, AddMajorToDeptMockTest) {
+    RouteController routeController;
+    SetUpDatabase(routeController);
+
+    crow::request req200{};
+    crow::response res200{};
+    req200.url_params = crow::query_string{"?deptCode=COMS"};
+    routeController.addMajorToDept(req200, res200);
+    EXPECT_EQ(res200.code, 200);
+    EXPECT_EQ(res200.body, "Attribute was updated successfully");
+
+    crow::request req404{};
+    crow::response res404{};
+    req404.url_params = crow::query_string{"?deptCode=NONEXISTENT"};
+    routeController.addMajorToDept(req404, res404);
+    EXPECT_EQ(res404.code, 404);
+    EXPECT_EQ(res404.body, "Department Not Found");
+
+    crow::request req400{};
+    crow::response res400{};
+    req400.url_params = crow::query_string{"?x=10"};
+    routeController.addMajorToDept(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include deptCode");
 }
 
-TEST(RouteControllerUnitTests, RemoveMajorToDeptTest) {
-    const auto endpoint = "/removeMajorFromDept?deptCode=COMS";
-    auto body = Fetch(endpoint);
-    auto expected = "Attribute was updated successfully";
-    EXPECT_EQ(body, expected);
+TEST(RouteControllerUnitTests, RemoveMajorFromDeptMockTest) {
+    RouteController routeController;
+    SetUpDatabase(routeController);
+
+    crow::request req200{};
+    crow::response res200{};
+    req200.url_params = crow::query_string{"?deptCode=COMS"};
+    routeController.removeMajorFromDept(req200, res200);
+    EXPECT_EQ(res200.code, 200);
+    EXPECT_EQ(res200.body, "Attribute was updated successfully");
+
+    crow::request req404{};
+    crow::response res404{};
+    req404.url_params = crow::query_string{"?deptCode=NONEXISTENT"};
+    routeController.removeMajorFromDept(req404, res404);
+    EXPECT_EQ(res404.code, 404);
+    EXPECT_EQ(res404.body, "Department Not Found");
+
+    crow::request req400{};
+    crow::response res400{};
+    req400.url_params = crow::query_string{"?x=10"};
+    routeController.removeMajorFromDept(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include deptCode");
 }
 
-TEST(RouteControllerUnitTests, SetEnrollmentCountTest) {
-    const auto endpoint = "/setEnrollmentCount?deptCode=COMS&courseCode=3203&count=42";
-    auto body = Patch(endpoint);
-    auto expected = "Attribute was updated successfully.";
-    EXPECT_EQ(body, expected);
+TEST(RouteControllerUnitTests, SetEnrollmentCountMockTest) {
+    RouteController routeController;
+    SetUpDatabase(routeController);
+
+    crow::request req200{};
+    crow::response res200{};
+    req200.url_params = crow::query_string{"?deptCode=COMS&courseCode=3203&count=42"};
+    routeController.setEnrollmentCount(req200, res200);
+    EXPECT_EQ(res200.code, 200);
+    EXPECT_EQ(res200.body, "Attribute was updated successfully.");
+
+    crow::request req404{};
+    crow::response res404{};
+    req404.url_params = crow::query_string{"?deptCode=NONEXISTENT&courseCode=3203&count=42"};
+    routeController.setEnrollmentCount(req404, res404);
+    EXPECT_EQ(res404.code, 404);
+    EXPECT_EQ(res404.body, "Department Not Found");
+
+    crow::request req400{};
+    crow::response res400{};
+    req400.url_params = crow::query_string{"?deptCode=COMS&courseCode=3203"};
+    routeController.setEnrollmentCount(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include count");
 }
 
-TEST(RouteControllerUnitTests, SetCourseLocationTest) {
-    const auto endpoint =
-        "/changeCourseLocation?deptCode=CHEM&courseCode=1500&location=402%20CHANDLER";
-    auto body = Patch(endpoint);
-    auto expected = "Attribute was updated successfully.";
-    EXPECT_EQ(body, expected);
+TEST(RouteControllerUnitTests, SetCourseLocationMockTest) {
+    RouteController routeController;
+    SetUpDatabase(routeController);
+
+    crow::request req200{};
+    crow::response res200{};
+    req200.url_params =
+        crow::query_string{"?deptCode=CHEM&courseCode=1500&location=402%20CHANDLER"};
+    routeController.setCourseLocation(req200, res200);
+    EXPECT_EQ(res200.code, 200);
+    EXPECT_EQ(res200.body, "Attribute was updated successfully.");
+
+    crow::request req404{};
+    crow::response res404{};
+    req404.url_params =
+        crow::query_string{"?deptCode=NONEXISTENT&courseCode=3203&location=402%20CHANDLER"};
+    routeController.setCourseLocation(req404, res404);
+    EXPECT_EQ(res404.code, 404);
+    EXPECT_EQ(res404.body, "Department Not Found");
+
+    crow::request req400{};
+    crow::response res400{};
+    req400.url_params = crow::query_string{"?deptCode=COMS&courseCode=3203"};
+    routeController.setCourseLocation(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include location");
 }
 
-TEST(RouteControllerUnitTests, SetCourseInstructorTest) {
-    const auto endpoint =
-        "/changeCourseTeacher?deptCode=CHEM&courseCode=1500&instructor=Jae%20Lee";
-    auto body = Patch(endpoint);
-    auto expected = "Attribute was updated successfully.";
-    EXPECT_EQ(body, expected);
+TEST(RouteControllerUnitTests, SetCourseInstructorMockTest) {
+    RouteController routeController;
+    SetUpDatabase(routeController);
+
+    crow::request req200{};
+    crow::response res200{};
+    req200.url_params = crow::query_string{"?deptCode=CHEM&courseCode=1500&instructor=Jae%20Lee"};
+    routeController.setCourseInstructor(req200, res200);
+    EXPECT_EQ(res200.code, 200);
+    EXPECT_EQ(res200.body, "Attribute was updated successfully.");
+
+    crow::request req404{};
+    crow::response res404{};
+    req404.url_params =
+        crow::query_string{"?deptCode=NONEXISTENT&courseCode=3203&instructor=Jae%20Lee"};
+    routeController.setCourseInstructor(req404, res404);
+    EXPECT_EQ(res404.code, 404);
+    EXPECT_EQ(res404.body, "Department Not Found");
+
+    crow::request req400{};
+    crow::response res400{};
+    req400.url_params = crow::query_string{"?deptCode=COMS&courseCode=3203"};
+    routeController.setCourseInstructor(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include instructor");
 }
 
-TEST(RouteControllerUnitTests, SetCourseTimeTest) {
-    const auto endpoint = "/changeCourseTime?deptCode=CHEM&courseCode=1500&time=10:10-11:25";
-    auto body = Patch(endpoint);
-    auto expected = "Attribute was updated successfully.";
-    EXPECT_EQ(body, expected);
+TEST(RouteControllerUnitTests, SetCourseTimeMockTest) {
+    RouteController routeController;
+    SetUpDatabase(routeController);
+
+    crow::request req200{};
+    crow::response res200{};
+    req200.url_params = crow::query_string{"?deptCode=CHEM&courseCode=1500&time=10:10-11:25"};
+    routeController.setCourseTime(req200, res200);
+    EXPECT_EQ(res200.code, 200);
+    EXPECT_EQ(res200.body, "Attribute was updated successfully.");
+
+    crow::request req404{};
+    crow::response res404{};
+    req404.url_params =
+        crow::query_string{"?deptCode=NONEXISTENT&courseCode=3203&time=10:10-11:25"};
+    routeController.setCourseTime(req404, res404);
+    EXPECT_EQ(res404.code, 404);
+    EXPECT_EQ(res404.body, "Department Not Found");
+
+    crow::request req400{};
+    crow::response res400{};
+    req400.url_params = crow::query_string{"?deptCode=COMS&courseCode=3203"};
+    routeController.setCourseTime(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include time");
 }
 
-TEST(RouteControllerUnitTests, DropStudentFromCourseTest) {
-    const auto endpoint = "/dropStudentFromCourse?deptCode=CHEM&courseCode=1500";
-    auto body = Fetch(endpoint);
-    auto expected = "Student has been dropped";
-    EXPECT_EQ(body, expected);
+TEST(RouteControllerUnitTests, DropStudentFromCourseMockTest) {
+    RouteController routeController;
+    SetUpDatabase(routeController);
+
+    crow::request req200{};
+    crow::response res200{};
+    req200.url_params = crow::query_string{"?deptCode=CHEM&courseCode=1500"};
+    routeController.dropStudentFromCourse(req200, res200);
+    EXPECT_EQ(res200.code, 200);
+    EXPECT_EQ(res200.body, "Student has been dropped");
+
+    crow::request req404{};
+    crow::response res404{};
+    req404.url_params = crow::query_string{"?deptCode=NONEXISTENT&courseCode=3203"};
+    routeController.dropStudentFromCourse(req404, res404);
+    EXPECT_EQ(res404.code, 404);
+    EXPECT_EQ(res404.body, "Department Not Found");
+
+    crow::request req400{};
+    crow::response res400{};
+    req400.url_params = crow::query_string{"?deptCode=COMS"};
+    routeController.dropStudentFromCourse(req400, res400);
+    EXPECT_EQ(res400.code, 400);
+    EXPECT_EQ(res400.body, "URL parameters must include courseCode");
 }

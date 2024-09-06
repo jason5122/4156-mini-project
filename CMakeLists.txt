@@ -22,9 +22,9 @@ set(SOURCE_FILES src/Course.cpp src/Department.cpp src/MyFileDatabase.cpp src/Ro
 )
 set(TEST_FILES
     test/CourseUnitTests.cpp test/DepartmentUnitTests.cpp test/MyFileDatabaseUnitTests.cpp
-    test/MyAppUnitTests.cpp
-    # test/RouteControllerUnitTests.cpp
+    test/MyAppUnitTests.cpp test/RouteControllerUnitTests.cpp
 )
+set(INTEGRATION_TEST_FILES test/RouteControllerIntegrationTest.cpp)
 
 # Main project executable.
 add_executable(mini_project src/main.cpp ${SOURCE_FILES})
