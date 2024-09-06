@@ -16,9 +16,11 @@ class Department:
 * dropPersonFromMajor() doesn't check if greater than 0 before decrementing.
 
 class RouteController:
+* All endpoints segfault if the required URL parameters aren't sent with the request.
 * dropStudentFromCourse() doesn't have an endpoint.
 * setCourseLocation(), setCourseInstructor(), and setCourseTime() don't match their endpoint names
   (/changeCourseLocation, /changeCourseTeacher, and /changeCourseTime, respectively).
+* Unnecessary back and forth std::stoi()/std::to_string() casts for courseCode.
 
 CourseUnitTests.cpp:
 * CourseUnitTests::testCourse is a global raw pointer which uses new/delete, which is very bad!
