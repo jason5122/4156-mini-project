@@ -39,6 +39,14 @@ target_include_directories(
 )
 target_link_libraries(mini_project_test gtest gtest_main)
 
+# Integration test executable.
+add_executable(mini_project_integration_test ${INTEGRATION_TEST_FILES} ${SOURCE_FILES})
+target_include_directories(
+    mini_project_integration_test PUBLIC ${INCLUDE_PATHS} include
+                                         /opt/homebrew/Cellar/asio/1.30.2/include
+)
+target_link_libraries(mini_project_integration_test gtest gtest_main)
+
 # Test using Google Test.
 enable_testing()
 include(FetchContent)
@@ -50,6 +58,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 include(GoogleTest)
 gtest_discover_tests(mini_project_test)
+gtest_discover_tests(mini_project_integration_test)
 
 # Lint using cpplint.
 find_program(CPPLINT cpplint)

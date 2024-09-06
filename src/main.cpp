@@ -21,16 +21,20 @@ void signalHandler(int signal) {
  */
 int main(int argc, char* argv[]) {
     std::string mode = argc > 1 ? argv[1] : "run";
-    MyApp::run(mode);
+    if (mode == "run") {
+        MyApp::run("run");
+        crow::SimpleApp app;
+        app.signal_clear();
+        std::signal(SIGINT, signalHandler);
+        std::signal(SIGTERM, signalHandler);
 
-    crow::SimpleApp app;
-    app.signal_clear();
-    std::signal(SIGINT, signalHandler);
-    std::signal(SIGTERM, signalHandler);
-
-    RouteController routeController;
-    routeController.initRoutes(app);
-    routeController.setDatabase(MyApp::getDatabase());
-    app.port(8080).multithreaded().run();
+        RouteController routeController;
+        routeController.initRoutes(app);
+        routeController.setDatabase(MyApp::getDatabase());
+        app.port(8080).multithreaded().run();
+    } else {
+        MyApp::run("setup");
+        MyApp::onTermination();
+    }
     return 0;
 }
