@@ -12,8 +12,11 @@
  */
 Department::Department(std::string deptCode,
                        std::map<std::string, std::shared_ptr<Course>> courses,
-                       std::string departmentChair, int numberOfMajors)
-    : numberOfMajors(numberOfMajors), deptCode(deptCode), departmentChair(departmentChair),
+                       std::string departmentChair,
+                       int numberOfMajors)
+    : numberOfMajors(numberOfMajors),
+      deptCode(deptCode),
+      departmentChair(departmentChair),
       courses(courses) {}
 
 Department::Department() : numberOfMajors(0) {}
@@ -46,8 +49,7 @@ const std::map<std::string, std::shared_ptr<Course>>& Department::getCourseSelec
 }
 
 /**
- * Returns a string representation of the department, including its code and the courses
- offered.
+ * Returns a string representation of the department, including its code and the courses offered.
  *
  * @return A string representing the department.
  */
@@ -94,14 +96,21 @@ void Department::addCourse(std::string courseId, std::shared_ptr<Course> course)
  * @param courseTimeSlot     The time slot of the course.
  * @param capacity           The maximum number of students that can enroll in the course.
  */
-void Department::createCourse(std::string courseId, std::string instructorName,
-                              std::string courseLocation, std::string courseTimeSlot,
+void Department::createCourse(std::string courseId,
+                              std::string instructorName,
+                              std::string courseLocation,
+                              std::string courseTimeSlot,
                               int capacity) {
     std::shared_ptr<Course> newCourse =
         std::make_shared<Course>(capacity, instructorName, courseLocation, courseTimeSlot);
     addCourse(courseId, newCourse);
 }
 
+/**
+ * Serializes the department as a binary format.
+ *
+ * @param out                The out stream to write to.
+ */
 void Department::serialize(std::ostream& out) const {
     size_t deptCodeLen = deptCode.length();
     out.write(reinterpret_cast<const char*>(&deptCodeLen), sizeof(deptCodeLen));
@@ -123,6 +132,11 @@ void Department::serialize(std::ostream& out) const {
     }
 }
 
+/**
+ * De-serializes the department from a binary format, setting this object's members accordingly.
+ *
+ * @param in                 The in stream to read from.
+ */
 void Department::deserialize(std::istream& in) {
     size_t deptCodeLen;
     in.read(reinterpret_cast<char*>(&deptCodeLen), sizeof(deptCodeLen));
@@ -149,6 +163,12 @@ void Department::deserialize(std::istream& in) {
     }
 }
 
+/**
+ * Checks if this department is equal to another department. We perform deep equality here,
+ * comparing each course in `courses` by value.
+ *
+ * @param rhs                The right hand side Department object to compare to.
+ */
 bool Department::operator==(const Department& rhs) const {
     // Compare courses by value, not by pointer address.
     for (const auto& [courseId, course] : courses) {
@@ -163,6 +183,12 @@ bool Department::operator==(const Department& rhs) const {
            departmentChair == rhs.departmentChair;
 }
 
+/**
+ * Checks if this department is *not* equal to another department. We perform deep equality here,
+ * comparing each course in `courses` by value.
+ *
+ * @param rhs                The right hand side Department object to compare to.
+ */
 bool Department::operator!=(const Department& rhs) const {
     return !operator==(rhs);
 }

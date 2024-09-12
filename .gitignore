@@ -1,10 +1,8 @@
 .vscode/
-external_libraries/boost_1_85_0
-external_libraries/Crow-1.2.0-Darwin
-build/*
-!build/README.txt
+build/
+external_libraries/*
 !external_libraries/README.txt
 
-# clangd
+# clang-tidy/clangd
 compile_commands.json
 .cache/

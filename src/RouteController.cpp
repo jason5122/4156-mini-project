@@ -8,7 +8,12 @@
 #include "RouteController.h"
 #include "crow.h"  // NOLINT
 
-// Utility function to handle exceptions
+/**
+ * Utility function to handle exceptions.
+ *
+ * @param e                  The exception to be handled.
+ * @return The Crow response.
+ */
 crow::response handleException(const std::exception& e) {
     std::cerr << e.what() << std::endl;
     return crow::response{500, "An error has occurred"};

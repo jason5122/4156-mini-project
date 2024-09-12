@@ -7,8 +7,8 @@
  * Constructs a MyFileDatabase object and loads up the data structure with
  * the contents of the file.
  *
- * @param flag     used to distinguish mode of database
- * @param filePath the path to the file containing the entries of the database
+ * @param flag               Used to distinguish mode of database
+ * @param filePath           The path to the file containing the entries of the database
  */
 MyFileDatabase::MyFileDatabase(int flag, const std::string& filePath) : filePath(filePath) {
     if (flag == 0) {
@@ -19,7 +19,7 @@ MyFileDatabase::MyFileDatabase(int flag, const std::string& filePath) : filePath
 /**
  * Sets the department mapping of the database.
  *
- * @param mapping the mapping of department names to Department objects
+ * @param mapping            The mapping of department names to Department objects
  */
 void MyFileDatabase::setMapping(const std::map<std::string, Department>& mapping) {
     departmentMapping = mapping;
@@ -28,7 +28,7 @@ void MyFileDatabase::setMapping(const std::map<std::string, Department>& mapping
 /**
  * Gets the department mapping of the database.
  *
- * @return the department mapping
+ * @return The department mapping
  */
 std::map<std::string, Department> MyFileDatabase::getDepartmentMapping() const {
     return departmentMapping;
@@ -52,9 +52,9 @@ void MyFileDatabase::saveContentsToFile() const {
 }
 
 /**
- * Deserializes the object from the file and returns the department mapping.
+ * De-serializes the object from the file and returns the department mapping.
  *
- * @return the deserialized department mapping
+ * @return The de-serialized department mapping.
  */
 void MyFileDatabase::deSerializeObjectFromFile() {
     std::ifstream inFile(filePath, std::ios::binary);
@@ -75,7 +75,7 @@ void MyFileDatabase::deSerializeObjectFromFile() {
 /**
  * Returns a string representation of the database.
  *
- * @return a string representation of the database
+ * @return A string representation of the database.
  */
 std::string MyFileDatabase::display() const {
     std::string result;
