@@ -11,17 +11,25 @@
  * @param timeSlot           The time slot of the course.
  * @param capacity           The maximum number of students that can enroll in the course.
  */
-Course::Course(int capacity, const std::string& instructorName, const std::string& courseLocation,
+Course::Course(int capacity,
+               const std::string& instructorName,
+               const std::string& courseLocation,
                const std::string& timeSlot)
-    : enrollmentCapacity(capacity), enrolledStudentCount(0), courseLocation(courseLocation),
-      instructorName(instructorName), courseTimeSlot(timeSlot) {}
+    : enrollmentCapacity(capacity),
+      enrolledStudentCount(0),
+      courseLocation(courseLocation),
+      instructorName(instructorName),
+      courseTimeSlot(timeSlot) {}
 
 /**
  * Constructs a default Course object with the default parameters.
  *
  */
 Course::Course()
-    : enrollmentCapacity(0), enrolledStudentCount(0), courseLocation(""), instructorName(""),
+    : enrollmentCapacity(0),
+      enrolledStudentCount(0),
+      courseLocation(""),
+      instructorName(""),
       courseTimeSlot("") {}
 
 std::string Course::getCourseLocation() const {

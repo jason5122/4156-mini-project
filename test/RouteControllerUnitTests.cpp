@@ -5,21 +5,21 @@
 
 namespace {
 
-inline void SetUpDatabase(RouteController& routeController) {
+inline void SetUpDatabase(RouteController* routeController) {
     MyApp::run("setup");
     MyApp::onTermination();
     MyApp::run("run");
 
     crow::SimpleApp app;
-    routeController.initRoutes(app);
-    routeController.setDatabase(MyApp::getDatabase());
+    routeController->initRoutes(app);
+    routeController->setDatabase(MyApp::getDatabase());
 }
 
-}
+}  // namespace
 
 TEST(RouteControllerUnitTests, RetrieveDepartmentMockTest) {
     RouteController routeController;
-    SetUpDatabase(routeController);
+    SetUpDatabase(&routeController);
 
     auto expected = R"(COMS 1004: 
 Instructor: Adam Cannon; Location: 417 IAB; Time: 11:40-12:55
@@ -63,7 +63,7 @@ Instructor: Gail Kaiser; Location: 501 NWC; Time: 10:10-11:25
 
 TEST(RouteControllerUnitTests, RetrieveCourseMockTest) {
     RouteController routeController;
-    SetUpDatabase(routeController);
+    SetUpDatabase(&routeController);
 
     crow::request req200{};
     crow::response res200{};
@@ -89,7 +89,7 @@ TEST(RouteControllerUnitTests, RetrieveCourseMockTest) {
 
 TEST(RouteControllerUnitTests, IsCourseFullMockTest) {
     RouteController routeController;
-    SetUpDatabase(routeController);
+    SetUpDatabase(&routeController);
 
     crow::request req200{};
     crow::response res200{};
@@ -133,7 +133,7 @@ TEST(RouteControllerUnitTests, IsCourseFullMockTest) {
 
 TEST(RouteControllerUnitTests, GetMajorCountFromDeptMockTest) {
     RouteController routeController;
-    SetUpDatabase(routeController);
+    SetUpDatabase(&routeController);
 
     crow::request req200{};
     crow::response res200{};
@@ -159,7 +159,7 @@ TEST(RouteControllerUnitTests, GetMajorCountFromDeptMockTest) {
 
 TEST(RouteControllerUnitTests, IdentifyDeptChairMockTest) {
     RouteController routeController;
-    SetUpDatabase(routeController);
+    SetUpDatabase(&routeController);
 
     crow::request req200{};
     crow::response res200{};
@@ -185,7 +185,7 @@ TEST(RouteControllerUnitTests, IdentifyDeptChairMockTest) {
 
 TEST(RouteControllerUnitTests, FindCourseLocationMockTest) {
     RouteController routeController;
-    SetUpDatabase(routeController);
+    SetUpDatabase(&routeController);
 
     crow::request req200{};
     crow::response res200{};
@@ -223,7 +223,7 @@ TEST(RouteControllerUnitTests, FindCourseLocationMockTest) {
 
 TEST(RouteControllerUnitTests, FindCourseInstructorMockTest) {
     RouteController routeController;
-    SetUpDatabase(routeController);
+    SetUpDatabase(&routeController);
 
     crow::request req200{};
     crow::response res200{};
@@ -261,7 +261,7 @@ TEST(RouteControllerUnitTests, FindCourseInstructorMockTest) {
 
 TEST(RouteControllerUnitTests, FindCourseTimeMockTest) {
     RouteController routeController;
-    SetUpDatabase(routeController);
+    SetUpDatabase(&routeController);
 
     crow::request req200{};
     crow::response res200{};
@@ -299,7 +299,7 @@ TEST(RouteControllerUnitTests, FindCourseTimeMockTest) {
 
 TEST(RouteControllerUnitTests, AddMajorToDeptMockTest) {
     RouteController routeController;
-    SetUpDatabase(routeController);
+    SetUpDatabase(&routeController);
 
     crow::request req200{};
     crow::response res200{};
@@ -325,7 +325,7 @@ TEST(RouteControllerUnitTests, AddMajorToDeptMockTest) {
 
 TEST(RouteControllerUnitTests, RemoveMajorFromDeptMockTest) {
     RouteController routeController;
-    SetUpDatabase(routeController);
+    SetUpDatabase(&routeController);
 
     crow::request req200{};
     crow::response res200{};
@@ -351,7 +351,7 @@ TEST(RouteControllerUnitTests, RemoveMajorFromDeptMockTest) {
 
 TEST(RouteControllerUnitTests, SetEnrollmentCountMockTest) {
     RouteController routeController;
-    SetUpDatabase(routeController);
+    SetUpDatabase(&routeController);
 
     crow::request req200{};
     crow::response res200{};
@@ -395,7 +395,7 @@ TEST(RouteControllerUnitTests, SetEnrollmentCountMockTest) {
 
 TEST(RouteControllerUnitTests, SetCourseLocationMockTest) {
     RouteController routeController;
-    SetUpDatabase(routeController);
+    SetUpDatabase(&routeController);
 
     crow::request req200{};
     crow::response res200{};
@@ -442,7 +442,7 @@ TEST(RouteControllerUnitTests, SetCourseLocationMockTest) {
 
 TEST(RouteControllerUnitTests, SetCourseInstructorMockTest) {
     RouteController routeController;
-    SetUpDatabase(routeController);
+    SetUpDatabase(&routeController);
 
     crow::request req200{};
     crow::response res200{};
@@ -487,7 +487,7 @@ TEST(RouteControllerUnitTests, SetCourseInstructorMockTest) {
 
 TEST(RouteControllerUnitTests, SetCourseTimeMockTest) {
     RouteController routeController;
-    SetUpDatabase(routeController);
+    SetUpDatabase(&routeController);
 
     crow::request req200{};
     crow::response res200{};
@@ -532,7 +532,7 @@ TEST(RouteControllerUnitTests, SetCourseTimeMockTest) {
 
 TEST(RouteControllerUnitTests, DropStudentFromCourseMockTest) {
     RouteController routeController;
-    SetUpDatabase(routeController);
+    SetUpDatabase(&routeController);
 
     crow::request req200{};
     crow::response res200{};

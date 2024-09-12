@@ -1,11 +1,14 @@
 // Copyright 2024 Jason Han
-#pragma once
+#ifndef COURSE_H
+#define COURSE_H
 
 #include <string>
 
 class Course {
 public:
-    Course(int count, const std::string& instructorName, const std::string& courseLocation,
+    Course(int capacity,
+           const std::string& instructorName,
+           const std::string& courseLocation,
            const std::string& timeSlot);
     Course();
 
@@ -36,3 +39,5 @@ private:
     std::string instructorName;
     std::string courseTimeSlot;
 };
+
+#endif

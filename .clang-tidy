@@ -1,0 +1,5 @@
+Checks: '-*,
+clang-analyzer-*,
+llvm-header-guard,
+readability-duplicate-include,
+readability-inconsistent-declaration-parameter-name'

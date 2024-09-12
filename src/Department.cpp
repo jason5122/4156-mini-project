@@ -12,8 +12,11 @@
  */
 Department::Department(std::string deptCode,
                        std::map<std::string, std::shared_ptr<Course>> courses,
-                       std::string departmentChair, int numberOfMajors)
-    : numberOfMajors(numberOfMajors), deptCode(deptCode), departmentChair(departmentChair),
+                       std::string departmentChair,
+                       int numberOfMajors)
+    : numberOfMajors(numberOfMajors),
+      deptCode(deptCode),
+      departmentChair(departmentChair),
       courses(courses) {}
 
 Department::Department() : numberOfMajors(0) {}
@@ -94,8 +97,10 @@ void Department::addCourse(std::string courseId, std::shared_ptr<Course> course)
  * @param courseTimeSlot     The time slot of the course.
  * @param capacity           The maximum number of students that can enroll in the course.
  */
-void Department::createCourse(std::string courseId, std::string instructorName,
-                              std::string courseLocation, std::string courseTimeSlot,
+void Department::createCourse(std::string courseId,
+                              std::string instructorName,
+                              std::string courseLocation,
+                              std::string courseTimeSlot,
                               int capacity) {
     std::shared_ptr<Course> newCourse =
         std::make_shared<Course>(capacity, instructorName, courseLocation, courseTimeSlot);
