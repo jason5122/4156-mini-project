@@ -5,6 +5,11 @@
 MyFileDatabase* MyApp::myFileDatabase = nullptr;
 bool MyApp::saveData = false;
 
+/**
+ *  Runs the app in either "setup" or "run" mode.
+ *
+ *  @param mode              The mode to run the app in.
+ */
 void MyApp::run(const std::string& mode) {
     saveData = true;
     if (mode == "setup") {
@@ -16,6 +21,10 @@ void MyApp::run(const std::string& mode) {
     std::cout << "Start up" << std::endl;
 }
 
+/**
+ *  Method that runs when app is terminated. If the app is in "setup" mode, save the default
+ *  database contents to disk.
+ */
 void MyApp::onTermination() {
     std::cout << "Termination" << std::endl;
     if (saveData && myFileDatabase) {
@@ -25,21 +34,35 @@ void MyApp::onTermination() {
     myFileDatabase = nullptr;
 }
 
+/**
+ *  Override database using data from a test database.
+ */
 void MyApp::overrideDatabase(MyFileDatabase* testData) {
     delete myFileDatabase;
     myFileDatabase = testData;
     saveData = false;
 }
 
+/**
+ *  Gets the global database.
+ *
+ *  @return The pointer to the global database.
+ */
 MyFileDatabase* MyApp::getDatabase() {
     return myFileDatabase;
 }
 
+/**
+ *  Sets the contents of the default database.
+ */
 void MyApp::setupDatabase() {
     myFileDatabase = new MyFileDatabase(1, "testfile.bin");
     resetDataFile();
 }
 
+/**
+ *  Resets the contents of the default database.
+ */
 void MyApp::resetDataFile() {
     std::string times[] = {"11:40-12:55", "4:10-5:25", "10:10-11:25", "2:40-3:55"};
     std::string locations[] = {"417 IAB", "309 HAV", "301 URIS"};

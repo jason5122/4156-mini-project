@@ -7,7 +7,7 @@
 #include "crow.h"  // NOLINT
 
 /**
- *  Method to handle proper termination protocols
+ *  Method to handle proper termination protocols.
  */
 void signalHandler(int signal) {
     if (signal == SIGINT || signal == SIGTERM) {
@@ -17,7 +17,7 @@ void signalHandler(int signal) {
 }
 
 /**
- *  Sets up the HTTP server and runs the program
+ *  Sets up the HTTP server and runs the program.
  */
 int main(int argc, char* argv[]) {
     std::string mode = argc > 1 ? argv[1] : "run";

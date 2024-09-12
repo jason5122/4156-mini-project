@@ -23,7 +23,6 @@ Course::Course(int capacity,
 
 /**
  * Constructs a default Course object with the default parameters.
- *
  */
 Course::Course()
     : enrollmentCapacity(0),
@@ -32,18 +31,38 @@ Course::Course()
       instructorName(""),
       courseTimeSlot("") {}
 
+/**
+ * Returns the course's location.
+ *
+ * @return The location as a string.
+ */
 std::string Course::getCourseLocation() const {
     return courseLocation;
 }
 
+/**
+ * Returns the course's instructor.
+ *
+ * @return The instructor as a string.
+ */
 std::string Course::getInstructorName() const {
     return instructorName;
 }
 
+/**
+ * Returns the course's time slot.
+ *
+ * @return The time slot as a string.
+ */
 std::string Course::getCourseTimeSlot() const {
     return courseTimeSlot;
 }
 
+/**
+ * Returns the course info as a human-readable string.
+ *
+ * @return The display string.
+ */
 std::string Course::display() const {
     std::string str;
     str += "\nInstructor: " + instructorName;
@@ -52,10 +71,20 @@ std::string Course::display() const {
     return str;
 }
 
+/**
+ * Returns whether or not the course is full.
+ *
+ * @return true if the course is full, false otherwise.
+ */
 bool Course::isCourseFull() const {
     return enrolledStudentCount >= enrollmentCapacity;
 }
 
+/**
+ * Sets the enrollment count.
+ *
+ * @param count              The new count.
+ */
 void Course::setEnrolledStudentCount(int count) {
     enrolledStudentCount = count;
 }
@@ -88,18 +117,38 @@ bool Course::dropStudent() {
     }
 }
 
+/**
+ * Assigns the course to a new location.
+ *
+ * @param newLocation        The new location.
+ */
 void Course::reassignLocation(const std::string& newLocation) {
     courseLocation = newLocation;
 }
 
+/**
+ * Assigns the course to a new instructor.
+ *
+ * @param newInstructorName  The new instructor name.
+ */
 void Course::reassignInstructor(const std::string& newInstructorName) {
     instructorName = newInstructorName;
 }
 
+/**
+ * Assigns the course to a new time slot.
+ *
+ * @param newTime            The new time slot.
+ */
 void Course::reassignTime(const std::string& newTime) {
     courseTimeSlot = newTime;
 }
 
+/**
+ * Serializes the course as a binary format.
+ *
+ * @param out                The out stream to write to.
+ */
 void Course::serialize(std::ostream& out) const {
     out.write(reinterpret_cast<const char*>(&enrollmentCapacity), sizeof(enrollmentCapacity));
     out.write(reinterpret_cast<const char*>(&enrolledStudentCount), sizeof(enrolledStudentCount));
@@ -117,6 +166,11 @@ void Course::serialize(std::ostream& out) const {
     out.write(courseTimeSlot.c_str(), timeSlotLen);
 }
 
+/**
+ * De-serializes the course from a binary format, setting this object's members accordingly.
+ *
+ * @param in                 The in stream to read from.
+ */
 void Course::deserialize(std::istream& in) {
     in.read(reinterpret_cast<char*>(&enrollmentCapacity), sizeof(enrollmentCapacity));
     in.read(reinterpret_cast<char*>(&enrolledStudentCount), sizeof(enrolledStudentCount));
@@ -137,6 +191,11 @@ void Course::deserialize(std::istream& in) {
     in.read(&courseTimeSlot[0], timeSlotLen);
 }
 
+/**
+ * Checks if this course is equal to another course.
+ *
+ * @param rhs                The right hand side Course object to compare to.
+ */
 bool Course::operator==(const Course& rhs) const {
     return enrollmentCapacity == rhs.enrollmentCapacity &&
            enrolledStudentCount == rhs.enrolledStudentCount &&
@@ -144,6 +203,11 @@ bool Course::operator==(const Course& rhs) const {
            courseTimeSlot == rhs.courseTimeSlot;
 }
 
+/**
+ * Checks if this course is *not* equal to another course.
+ *
+ * @param rhs                The right hand side Course object to compare to.
+ */
 bool Course::operator!=(const Course& rhs) const {
     return !operator==(rhs);
 }
